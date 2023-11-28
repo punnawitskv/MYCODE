@@ -11,5 +11,5 @@ for char in user_input:
     if char.islower():
         count_lowercase += 1
 
-print("outout_uppercase: ", count_uppercase)
-print("outout_lowercase: ", count_lowercase)
+print("outout_uppercase:", count_uppercase)
+print("outout_lowercase:", count_lowercase)
