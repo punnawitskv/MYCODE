@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "sstream": "c",
+        "math.h": "c",
+        "cmath": "c",
+        "chrono": "c",
+        "span": "c",
+        "stdio.h": "c",
+        "windows.h": "c"
+    },
+    "code-runner.executorMap": {
+        // หน้าจอเด้ง
+        // "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt.exe && start powershell {$dir$fileNameWithoutExt.exe}",
+        // "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt.exe && start powershell {$dir$fileNameWithoutExt.exe}",
+
+        // หน้าจอไม่เด้ง
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt.exe && $dir$fileNameWithoutExt.exe",
+        "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt.exe && $dir$fileNameWithoutExt.exe"
+    }
+}

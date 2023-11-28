@@ -1,0 +1,26 @@
+#include<stdio.h>
+
+int main(void) {
+    char *p , str[100];
+    p = str;
+    scanf("%s", str);
+    while (*p != '\0')
+    {
+        if(*p >= 'a' && *p <= 'z')
+        {
+            *p = *p - 'a' + 'A';
+            printf("%c", *p);
+            p++;
+        }
+        else if (*p >= 'A' && *p <='Z'){
+            *p = *p - 'A' + 'a';
+            printf("%c", *p);
+            p++;
+        }
+        else {
+            p++;
+        }
+    }
+    return 0;
+    
+}
