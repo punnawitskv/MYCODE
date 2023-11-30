@@ -5,4 +5,3 @@ for num1 in range(999, 99, -1) :
             if mostPalindrome < num1*num2:
                 mostPalindrome = num1*num2
 print(mostPalindrome)
-            
