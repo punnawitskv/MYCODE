@@ -5,6 +5,8 @@ def day_of_year(day, month, year):
     days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if is_leap(year):
         days_in_month[2] = 29
+    if month < 1 or month > 12 or day < 1 or day > days_in_month[month]:
+        return "Invalid date"
     day_of_year = sum(days_in_month[:month]) + day
     return day_of_year
 
@@ -31,4 +33,4 @@ if day1>0 and day1<32 and month1>0 and month1<13 and year1 > 0 and day2>0 and da
     total_days_differenc = date_diff(day1, month1, year1, day2, month2, year2) + 1
     print(f"The number of days between {day1}/{month1}/{year1} and {day2}/{month2}/{year2} is: {total_days_differenc} days")
 else:
-    print("Brrrrrr(-1)")
+    print("Brrrrrr")
