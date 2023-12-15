@@ -17,7 +17,7 @@ def total_days_in_years(start_year, end_year):
     return total_days
 
 def date_diff(day1, month1, year1, day2, month2, year2):
-    day_result1 = day_of_year(day1, month1, year1)
+    day_result1 = day_of_year(day1, month1, year1)  
     day_result2 = day_of_year(day2, month2, year2)
     days_in_full_years = total_days_in_years(year1 + 1, year2 - 1)
     if year2 > year1:
@@ -26,8 +26,8 @@ def date_diff(day1, month1, year1, day2, month2, year2):
         total_days_difference = days_in_full_years + day_result2 - day_result1
     return total_days_difference
 
-day1, month1, year1 = map(int, input("Enter the first date (dd mm yyyy): ").split())
-day2, month2, year2 = map(int, input("Enter the second date (dd mm yyyy): ").split())
+day1, month1, year1 = map(int, input("Enter the first date (dd-mm-yyyy): ").split('-'))
+day2, month2, year2 = map(int, input("Enter the second date (dd-mm-yyyy): ").split('-'))
 
 if day1>0 and day1<32 and month1>0 and month1<13 and year1 > 0 and day2>0 and day2<32 and month2>0 and month2<13 and year2>=year1:
     total_days_differenc = date_diff(day1, month1, year1, day2, month2, year2) + 1
