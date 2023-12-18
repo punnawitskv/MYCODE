@@ -4,11 +4,17 @@ def is_leap(year):
   return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
 def day_of_year(day, month, year):
-  if is_leap(year):
-      day_in_month[2] = 29
-  if month < 1 or month > 12 or day < 1 or day > day_in_month[month]:
-      return "Invalid date"
-  day_of_year = sum(day_in_month[:month]) + day
+  day_in_month = [0,31,28,31,30,31,30,31,31,30,31,30,31]
+  day_of_year = 0
+  if is_leap(year) :
+      day_in_month[2] += 1
+  else:
+      if month == 2 and day == 29:
+          return -1
+  for i in range(1,month):
+      day_of_year += day_in_month[i]
+  day_of_year += day 
+
   return day_of_year
 
 def day_in_year(year):
@@ -30,11 +36,11 @@ def date_diff(date1, date2):
       total_days_difference -= day_of_year(day1, month1, year1)
       total_days_difference += day_of_year(day2, month2, year2)
 
-      print(f"{total_days_difference+1}")
+      return (total_days_difference+1)
   else:
-      print("Invalid date input")
-      
-first_date = input("Enter the first date (dd-mm-yyyy): ")
-secound_date = input("Enter the second date (dd-mm-yyyy): ")
+      return ("Invalid date input")
 
-date_diff(first_date, secound_date)
+# first_date = input("Enter the first date (dd-mm-yyyy): ")
+# secound_date = input("Enter the second date (dd-mm-yyyy): ")
+# date_diff(first_date, secound_date)
+print(date_diff("25-12-1999", "9-3-2000"))
