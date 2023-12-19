@@ -1,0 +1,1 @@
+subject_score = { }, subject = ‘python’, score = 50
