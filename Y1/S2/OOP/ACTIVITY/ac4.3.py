@@ -12,8 +12,6 @@ def find_student_from_id(stu_id_input):
     for student in students:
         if student.stu_id == stu_id_input:
             return student
-    print("Student not found")
-    return None
 
 
 def check_mentor(student_input):
@@ -28,7 +26,6 @@ def mentors_list_of_this_student(mentors):
     if not mentors:
         print('Not found')
         return
-
     for mentor in mentors:
         print(mentor.stu_id, mentor.stu_name, sep='\t')
 
@@ -51,6 +48,7 @@ students = [
     Student('042', 'Heimerdinger')
 ]
 
+
 students[0].add_mentor(students[2])  #
 students[1].add_mentor(students[3])
 students[2].add_mentor(students[4])  #
@@ -58,6 +56,12 @@ students[3].add_mentor(students[5])
 students[4].add_mentor(students[6])  #
 students[5].add_mentor(students[7])
 
+
+print("Students List : 011, 012, 021, 022, 031, 032, 041, 042")
 student_id_input = input("Enter student id : ")
-print(f"Mentors bond of {find_student_from_id(student_id_input).stu_name} is")
-find_mentors_from_student_id(student_id_input)
+if find_student_from_id(student_id_input):
+    print(f"Mentors bond of {find_student_from_id(student_id_input).stu_name}({student_id_input}) is")
+    find_mentors_from_student_id(student_id_input)
+else:
+    print(f"Student {student_id_input} is not found")
+
