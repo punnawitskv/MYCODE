@@ -55,22 +55,26 @@ stu4.enroll_subject(oop_sec2)
 stu5.enroll_subject(oop_sec2)
 
 def find_students_by_teacher(teacher_id):
+    students_list = []
     for teacher in [tch1, tch2]:
-        if teacher.teacher_id == teacher_id:
-            print(f"Teacher {teacher.teacher_name} teaches the following students:")
+        if str(teacher.teacher_id) == teacher_id:
             for subject_taught in teacher.subjects_taught:
                 for student in subject_taught.students:
-                    print(f"- {student.stu_name}")
+                    students_list.append(student.stu_name)
+    return students_list
 
 def find_subjects_by_student(student_id):
+    subjects_list = []
     for student in [stu1, stu2, stu3, stu4, stu5]:
         if student.stu_id == student_id:
-            print(f"Student {student.stu_name} is enrolled in the following subjects:")
             for subject_enrolled in student.subjects:
-                print(f"- {subject_enrolled.sub_name}")
+                subjects_list.append(subject_enrolled.sub_name)
+    return subjects_list
 
 teacher_id = input("Input teacher ID (101, 102) : ")
-find_students_by_teacher(teacher_id)
+teacher_students = find_students_by_teacher(teacher_id)
+print(f"Teacher teaches the following students: {teacher_students}")
 
 student_id = input("Input student ID (001, 002, 003, 004, 005) : ")
-find_subjects_by_student(student_id)
+student_subjects = find_subjects_by_student(student_id)
+print(f"Student is enrolled in the following subjects: {student_subjects}")
