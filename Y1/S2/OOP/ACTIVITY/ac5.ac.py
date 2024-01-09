@@ -1,11 +1,27 @@
 class Student:
     def __init__(self, stu_id, stu_name):
-        self.stu_id = stu_id
-        self.stu_name = stu_name
-        self.subjects_list = []
+        self.__stu_id = stu_id
+        self.__stu_name = stu_name
 
-    def enroll_subject(self, subject):
-        self.subjects_list.append(subject)
+    def get_id(self):
+        return self.__stu_id
+    
+    def get_name(self):
+        return self.__stu_name
+    
+    def set_id(self, id):
+        if type(id) == int:
+            self.__stu_id = int(id)
+            return True
+        else:
+            return False
+        
+    def set_name(self, name):
+        if type(name) == str:
+            self.__stu_name = str(name)
+            return True
+        else:
+            return False
 
 
 class Subject:
@@ -30,7 +46,6 @@ class Teacher:
         self.teacher_id = teacher_id
         self.teacher_name = teacher_name
         self.subjects_taught_list = []
-
 
 students = [
     Student('001', 'John'),
