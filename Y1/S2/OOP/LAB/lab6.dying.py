@@ -66,7 +66,7 @@ class Bank:
         sender_account.decrease_balance(amount)
         receiver_account.increase_balance(amount)
 
-        sender_account.add_transaction(f"Transfer to {receiver_account.get_username()}: -{amount}")
+        sender_account.add_transaction(f"Transfer to {receiver_account.get_username()}: {amount}")
         receiver_account.add_transaction(f"Transfer from {sender_account.get_username()}: +{amount}")
 
         return "Success"
@@ -96,7 +96,7 @@ class ATM:
             return "Error"
 
         user_account.increase_balance(amount)
-        user_account.add_transaction(f"Deposit: +{amount}")
+        user_account.add_transaction(f"Deposit: {amount}")
 
         return "Success"
 
@@ -106,7 +106,7 @@ class ATM:
             return "Error"
 
         user_account.decrease_balance(amount)
-        user_account.add_transaction(f"Withdrawal: -{amount}")
+        user_account.add_transaction(f"Withdrawal: {amount}")
 
         return "Success"
 

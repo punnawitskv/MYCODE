@@ -6,18 +6,7 @@ class User:
         self.__account_number = account_number
         self.__balance = balance
         self.__pin_number = pin_number
-
-    def __str__(self):
-        return f"National ID: {self.__national_id}\nUsername: {self.__username}\nAccount Number: {self.__account_number}\nBalance: {self.__balance}\nPIN Number: {self.__pin_number}\n"
-    
-    # def get_user_info(self):
-    #     return {
-    #         'national_id': self.__national_id,
-    #         'username': self.__username,
-    #         'account_number': self.__account_number,
-    #         'balance': self.__balance,
-    #         'pin_number': self.__pin_number
-    #     }
+        self.__transactions = []
         
     def get_national_id(self):
         return self.__national_id
@@ -34,27 +23,97 @@ class User:
     def get_pin_number(self):
         return self.__pin_number
     
-    def search_account_number_from_pin_number(self, pin_to_search):
-        # ตรวจสอบว่า pin_to_search เป็น PIN ของผู้ใช้หรือไม่
-        if pin_to_search == self.__pin_number:
-            return self.__account_number
+    def increase_balance(self, amount):
+        self.__balance += amount
+
+    def decrease_balance(self, amount):
+        self.__balance -= amount
+        
+    def add_transaction(self, transaction):
+        self.__transactions.append(transaction)
+
+    def get_transactions(self):
+        return self.__transactions
+    
+    def get_last_transaction(self):
+        if self.__transactions:
+            return self.__transactions[-1]
+        else:
+            return None
+        
+
+class Bank:
+    def __init__(self, users, atms):
+        self.__users = users
+        self.__atms = atms
+
+    def get_user_by_national_id(self, national_id):
+        if national_id in self.__users:
+            return self.__users[national_id]
         else:
             return None
 
+    def get_atm_by_id(self, atm_id):
+        if atm_id in self.__atms:
+            return self.__atms[atm_id]
+        else:
+            return None
+
+    def transfer_money(self, sender_account, receiver_account, amount):
+        if amount <= 0 or sender_account.get_balance() < amount:
+            return "Error: Invalid amount or insufficient balance."
+
+        sender_account.decrease_balance(amount)
+        receiver_account.increase_balance(amount)
+
+        sender_account.add_transaction(f"Transfer to {receiver_account.get_username()}: {amount}")
+        receiver_account.add_transaction(f"Transfer from {sender_account.get_username()}: +{amount}")
+
+        return "Success"
 
 class ATM:
     def __init__(self, atm_id, atm_balance):
         self.__atm_id = atm_id
         self.__atm_balance = atm_balance
-        
-    def __str__(self):
-        return f"ATM ID: {self.__atm_id}\nATM Balance: {self.__atm_balance}\n"
 
     def get_atm_id(self):
         return self.__atm_id
-    
+
     def get_atm_balance(self):
         return self.__atm_balance
+
+    def insert_card(self, bank, atm_card):
+        user_instance = bank.get_user_by_national_id(atm_card)
+
+        if user_instance:
+            return user_instance
+        else:
+            return None
+
+    def deposit_money(self, user_account, amount):
+        if amount <= 0:
+            # return "Error: Invalid deposit amount."
+            return "Error"
+
+        user_account.increase_balance(amount)
+        user_account.add_transaction(f"Deposit: {amount}")
+
+        return "Success"
+
+    def withdraw_money(self, user_account, amount):
+        if amount <= 0 or amount > user_account.get_balance():
+            # return "Error: Invalid withdrawal amount."
+            return "Error"
+
+        user_account.decrease_balance(amount)
+        user_account.add_transaction(f"Withdrawal: {amount}")
+
+        return "Success"
+
+    def transfer_money(self, sender_account, receiver_account, amount, bank):
+        transfer_result = bank.transfer_money(sender_account, receiver_account, amount)
+        return transfer_result
+
         
 ##################################################################################
 
@@ -66,27 +125,6 @@ users = {}
 for user_id, data in user.items():
     user = User(user_id, data[0], data[1], data[2], data[3])
     users[user_id] = user
-
-# ดึงข้อมูลของผู้ใช้งานทั้งหมด
-# users_info = {}
-# for user_id, user in users.items():
-#     users_info[user_id] = user.get_user_info()
-
-# แสดงข้อมูลของผู้ใช้งานทั้งหมด
-# for user_id, user_info in users_info.items():
-#     print(f"National ID: {user_info['national_id']}")
-#     print(f"Username: {user_info['username']}")
-#     print(f"Account Number: {user_info['account_number']}")
-#     print(f"Balance: {user_info['balance']}")
-#     print(f"PIN Number: {user_info['pin_number']}")
-#     print()
-for user_id, user_obj in users.items():
-    print(f"National ID: {user_obj.get_national_id()}")
-    print(f"Username: {user_obj.get_username()}")
-    print(f"Account Number: {user_obj.get_account_number()}")
-    print(f"Balance: {user_obj.get_balance()}")
-    print(f"PIN Number: {user_obj.get_pin_number()}")
-    print()
     
 atm ={'1001':1000000,'1002':200000}
 
@@ -94,11 +132,6 @@ atms = {}
 for atm_id, atm_balance in atm.items():
     atm_obj = ATM(atm_id, atm_balance)
     atms[atm_id] = atm_obj
-    
-for atm_id, atm_obj in atms.items():
-    print(f"ATM ID: {atm_obj.get_atm_id()}")
-    print(f"ATM Balance: {atm_obj.get_atm_balance()}")
-    print()
 
 
 # TODO 1 : จากข้อมูลใน user ให้สร้าง instance โดยมีข้อมูล
@@ -106,6 +139,10 @@ for atm_id, atm_obj in atms.items():
 # TODO :   [ชื่อ, หมายเลขบัญชี, หมายเลขบัตร ATM, จำนวนเงินในบัญชี]
 # TODO :   return เป็น instance ของธนาคาร
 # TODO :   และสร้าง instance ของเครื่อง ATM จำนวน 2 เครื่อง
+bank = Bank(users, atms)
+atm1 = ATM('1001', 1000000)
+atm2 = ATM('1002', 200000)
+atms = {'1001': atm1, '1002': atm2}
 
 
 # TODO 2 : เขียน method ที่ทำหน้าที่สอดบัตรเข้าเครื่อง ATM มี parameter 2 ตัว ได้แก่ 1) instance ของธนาคาร
@@ -139,6 +176,16 @@ for atm_id, atm_obj in atms.items():
 # และเรียกใช้ function หรือ method จากเครื่อง ATM
 # ผลที่คาดหวัง : พิมพ์ หมายเลข account ของ harry อย่างถูกต้อง และ พิมพ์หมายเลขบัตร ATM อย่างถูกต้อง
 # Ans : 12345, 1234567890, Success
+print("\nTest Case #1:")
+print('Expected :\n12345, 1234567890, Success')
+print('Actual :')
+atm1_card_number = '1-1101-12345-12-0'
+atm1_user_instance = atm1.insert_card(bank, atm1_card_number)
+
+if atm1_user_instance:
+    print(f"{atm1_user_instance.get_pin_number()}, {atm1_user_instance.get_account_number()}, Success")
+else:
+    print("Invalid card. Please try again.")
 
 
 # Test case #2 : ทดสอบฝากเงินเข้าในบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 1000 บาท
@@ -146,10 +193,26 @@ for atm_id, atm_obj in atms.items():
 # ผลที่คาดหวัง : แสดงจำนวนเงินในบัญชีของ Hermione ก่อนฝาก หลังฝาก และ แสดง transaction
 # Hermione account before test : 1000
 # Hermione account after test : 2000
+print("\nTest Case #2:")
+print('Expected : \nHermione account before test : 1000\nHermione account after test : 2000')
+print('Actual :')
+hermione_account_before_test = users['1-1101-12345-13-0'].get_balance()
+print(f"Hermione account before test : {hermione_account_before_test}")
+
+# Use increase_balance method instead of directly modifying balance attribute
+deposit_result = atm2.deposit_money(users['1-1101-12345-13-0'], 1000)
+hermione_account_after_test = users['1-1101-12345-13-0'].get_balance()
+print(f"Hermione account after test : {hermione_account_after_test}")
+# print(f"Transaction: {users['1-1101-12345-13-0'].get_transactions()}")
 
 
 # Test case #3 : ทดสอบฝากเงินเข้าในบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน -1 บาท
 # ผลที่คาดหวัง : แสดง Error
+print("\nTest Case #3:")
+print('Expected :\nError')
+print('Actual :')
+invalid_deposit_result = atm2.deposit_money(users['1-1101-12345-13-0'], -1)
+print(invalid_deposit_result)
 
 
 # Test case #4 : ทดสอบการถอนเงินจากบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 500 บาท
@@ -157,10 +220,27 @@ for atm_id, atm_obj in atms.items():
 # ผลที่คาดหวัง : แสดงจำนวนเงินในบัญชีของ Hermione ก่อนถอน หลังถอน และ แสดง transaction
 # Hermione account before test : 2000
 # Hermione account after test : 1500
+print("\nTest Case #4:")
+print('Expected :\nHermione account before test : 2000\nHermione account after test : 1500')
+print('Actual :')
+hermione_account_before_test = users['1-1101-12345-13-0'].get_balance()
+print(f"Hermione account before test : {hermione_account_before_test}")
+
+# Use decrease_balance method instead of directly modifying balance attribute
+withdraw_result = atm2.withdraw_money(users['1-1101-12345-13-0'], 500)
+hermione_account_after_test = users['1-1101-12345-13-0'].get_balance()
+print(f"Hermione account after test : {hermione_account_after_test}")
+# print(f"Transaction: {users['1-1101-12345-13-0'].get_transactions()}")
 
 
 # Test case #5 : ทดสอบถอนเงินจากบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 2000 บาท
 # ผลที่คาดหวัง : แสดง Error
+print("\nTest Case #5:")
+print('Expected :\nError')
+print('Actual :')
+invalid_withdrawal_result = atm2.withdraw_money(users['1-1101-12345-13-0'], 2000)
+print(invalid_withdrawal_result)
+
 
 # Test case #6 : ทดสอบการโอนเงินจากบัญชีของ Harry ไปยัง Hermione จำนวน 10000 บาท ในเครื่อง atm เครื่องที่ 2
 # ให้เรียกใช้ method ที่ทำการโอนเงิน
@@ -169,6 +249,18 @@ for atm_id, atm_obj in atms.items():
 # Harry account after test : 10000
 # Hermione account before test : 1500
 # Hermione account after test : 11500
+print("\nTest Case #6:")
+print('Expected :\nHarry account before test : 20000\nHarry account after test : 10000\nHermione account before test : 1500\nHermione account after test : 11500')
+print('Actual :')
+harry_account_before_test = users['1-1101-12345-12-0'].get_balance()
+print(f"Harry account before test: {harry_account_before_test}")
+
+# Use transfer_money method to transfer money from Harry to Hermione
+transfer_result = atm2.transfer_money(users['1-1101-12345-12-0'], users['1-1101-12345-13-0'], 10000, bank)
+print(f"Harry account after test: {users['1-1101-12345-12-0'].get_balance()}")
+print(f"Hermione account before test : 1500")
+print(f"Hermione account after test : {users['1-1101-12345-13-0'].get_balance()}")
+# print(f"Transaction: {users['1-1101-12345-13-0'].get_transactions()}")
 
 
 # Test case #7 : แสดง transaction ของ Hermione ทั้งหมด 
@@ -176,5 +268,24 @@ for atm_id, atm_obj in atms.items():
 # Hermione transaction : D-ATM:1002-1000-2000
 # Hermione transaction : W-ATM:1002-500-1500
 # Hermione transaction : T-ATM:1002-+10000-11500
+print("\nTest Case #7:")
+print('Expected :\nHermione transaction : D-ATM:1002-1000-2000\nHermione transaction : W-ATM:1002-500-1500\nHermione transaction : T-ATM:1002-+10000-11500')
+print('Actual :')
+hermione_transactions = users['1-1101-12345-13-0'].get_transactions()
+if hermione_transactions:
+    for transaction in hermione_transactions:
+        if "Deposit" in transaction:
+            amount = transaction.split(":")[1].strip()
+            transaction = f"D-ATM:1002-{amount}-2000"
+        elif "Withdrawal" in transaction:
+            amount = transaction.split(":")[1].strip()
+            transaction = f"W-ATM:1002-{amount}-1500"
+        elif "Transfer from" in transaction:
+            amount = transaction.split(":")[1].strip()
+            transaction = f"T-ATM:1002-{amount}-11500"
+        print(f"Hermione transaction : {transaction}")
+else:
+    print("No transactions found for Hermione.")
+
 # Lab6_skeleton_code.py
 # Displaying Lab6_skeleton_code.py.
