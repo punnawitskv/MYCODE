@@ -68,9 +68,9 @@ class Transaction:
     
     
 class ATM:
-    def __init__(self, atm_number, moneny_in_atm):
+    def __init__(self, atm_number, amount_of_money_in_atm):
         self.__atm_number = atm_number
-        self.__moneny_in_atm = moneny_in_atm
+        self.__amount_of_money_in_atm = amount_of_money_in_atm
 
     def insert_card(self, bank ,atm_number):
         for user_instance in bank.user :
@@ -92,12 +92,12 @@ class ATM:
             return 'Success'
         else : return 'Error'   
 
-    def transfer(self, atm, account_own, account_transfer_to, money):
-        if money > 0 and account_own.user.amount_of_money >= money :
-            account_own.user.amount_of_money -= money
-            account_transfer_to.user.amount_of_money += money
-            account_own.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{account_own.user.amount_of_money}')
-            account_transfer_to.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{account_transfer_to.user.amount_of_money}')
+    def transfer(self, atm, transferor_account, transferee_account, money):
+        if money > 0 and transferor_account.user.amount_of_money >= money :
+            transferor_account.user.amount_of_money -= money
+            transferee_account.user.amount_of_money += money
+            transferor_account.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{transferor_account.user.amount_of_money}')
+            transferee_account.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{transferee_account.user.amount_of_money}')
             return 'Success'
         else : return 'Error'   
             
@@ -111,16 +111,17 @@ user = {'1-1101-12345-49-0':['Harry Potter','1234567890',20000,'12345'],
 atm = {'1001':1000000,'1002':200000} #หมายเลขตู้,เงินที่มีในตู้
 
 users = []
-atms = []
-
 for citizen_id, data in user.items():
     user_instance = User(citizen_id, *data)
     users.append(user_instance)
-
+    
+atms = []
 for atm_number, data in atm.items():
     atm_instance = ATM(atm_number, data)
     atms.append(atm_instance)
+    
 bank = Bank(users, atms)
+
 
 # TODO 1 : จากข้อมูลใน user ให้สร้าง instance โดยมีข้อมูล
 # TODO :   key:value โดย key เป็นรหัสบัตรประชาชน และ value เป็นข้อมูลของคนนั้น ประกอบด้วย
@@ -160,6 +161,7 @@ print("")
 print("Test case #1")
 print("Expected : 12345, 1234567890, Success")
 print("Actual\t : ", end='')
+
 accout = atms[0].insert_card(bank ,'12345')
 if accout != 'None':
     print(f"{accout.user.atm_number}, {accout.user.account_number}, Success")
@@ -176,8 +178,10 @@ print("")
 print("Test case #2")
 print("Expected :\nHermione account before test : 1000")
 print("Hermione account after\ttest : 2000")
-print("Actual :")
+print("Actual\t :")
+
 print(f'Hermione account before test : {users[1].amount_of_money}')
+
 atms[1].deposit(atms[1], users[1].account, 1000)
 print(f'Hermione account after\ttest : {users[1].amount_of_money}')
 print("")
@@ -188,6 +192,7 @@ print("")
 print("Test case #3")
 print("Expected : Error")
 print("Actual\t : ", end='')
+
 print(atms[1].deposit(atms[1], users[1].account, -1))
 print("")
 
@@ -200,8 +205,10 @@ print("")
 print("Test case #4")
 print("Expected :\nHermione account before test : 2000\nHermione account after\ttest : 1500")
 print("Actual\t :")
+
 print("Hermione account before test : ", end='')
 print(f"{users[1].amount_of_money}")
+
 atms[1].withdraw(atms[1], users[1].account, 500)
 print("Hermione account after\ttest : ", end='')
 print(f"{users[1].amount_of_money}")
@@ -213,6 +220,7 @@ print("")
 print("Test case #5")
 print("Expected : Error")
 print("Actual\t : ", end='')
+
 print(atms[1].deposit(atms[1], users[1].account, -2000))
 print("")
 
@@ -252,6 +260,7 @@ print("")
 print("Test case #7")
 print("Expected :\nHermione transaction : D-ATM:1002-1000-2000\nHermione transaction : W-ATM:1002-500-1500\nHermione transaction : T-ATM:1002-+10000-11500")
 print("Actual\t :")
+
 for transaction in users[1].get_transactions():
     print(f"Hermione transaction : {transaction}")
 print("")
