@@ -1,112 +1,174 @@
 # Class Code
 class Bank:
-    def __init__(self, user, atm):
-        self.__users = user
-        self.__atms = atm
+    def __init__(self, users, atms):
+        self.__users = users
+        self.__atms = atms
         
     @property
-    def user(self):
-        return  self.__users
+    def users(self):
+        return self.__users
+    
+    
+class ATM:
+    def __init__(self, atm_number, money_in_atm):
+        self.__atm_number = atm_number
+        self.__money_in_atm = money_in_atm
+        
+    @property
+    def monet_in_atm(self):
+        return self.__money_in_atm
+    
+    @monet_in_atm.setter
+    def monet_in_atm(self, monet_in_atm):
+        self.__money_in_atm = monet_in_atm 
+        
+    @property
+    def atm_number(self):
+        return self.__atm_number    
 
-
+    def insert_card(self, bank, pin_number):
+        for user_instance in bank.users:
+            if user_instance.account.atm_card.pin_number == pin_number:
+                return user_instance.account
+        return "None"
 class User:
-    def __init__(self, citizen_id, name, account_number, amount_of_money, atm_number):
+    def __init__(self, citizen_id, name, account_number, amount_of_money, atm_card):
         self.__citizen_id = citizen_id
         self.__name = name
         self.__account_number = account_number
+        self.__account = Account(account_number, self, atm_card, amount_of_money)
+        self.__account_fixed = Fixed_Account(account_number, self, amount_of_money)
+    @property
+    def account(self):
+        return self.__account
+    @property
+    def account_number(self):
+        return self.__account_number
+    @property
+    def account_fixed(self):
+        return self.__account_fixed
+
+
+class Account:
+    def __init__(self, account_number, user, atm_card, amount_of_money):
+        self.__account_number = account_number
+        self.__user = user
         self.__amount_of_money = amount_of_money
-        self.__atm_number = atm_number
-        self.__account = Account(account_number, self)
-        self.__transactions = []
-    
-    def get_transactions(self):
-        return self.__transactions
+        self.__atm_card = ATM_Card(atm_card)
+        self.__transaction = Transactions(self, amount_of_money)
+        self.__total_transactions = []
+        self.__debit_card = Debit_Card(atm_card)
         
     @property
     def amount_of_money(self):
         return self.__amount_of_money
-    
     @amount_of_money.setter
-    def amount_of_money(self, money):
-        self.__amount_of_money = money
-        
+    def amount_of_money(self, monet_in_atm):
+        self.__amount_of_money = monet_in_atm
     @property
-    def atm_number(self):
-        return self.__atm_number
-    
+    def transaction(self):
+        return self.__transaction
     @property
-    def account(self):
-        return self.__account
-    
+    def total_transactions(self):
+        return self.__total_transactions
     @property
-    def account_number(self):
-        return self.__account_number
-        
-
-class Account:
-    def __init__(self, account_number, user):
-        self.__account_number = account_number
-        self.__user  = user
-        
+    def atm_card(self):
+        return self.__atm_card
+    @property
+    def debit_card(self):
+        return self.__debit_card
     @property
     def user(self):
         return self.__user
     
+class Fixed_Account(Account):
+    interest  = 0.02
+    def __init__(self, account_number, user, monet_in_atm):
+        super().__init__(account_number, user, None, monet_in_atm)
+    @property
+    def Annual_fee(self):
+        Annual_fee = self.amount_of_money * Fixed_Account.interest
+        return Annual_fee
+
 
 class ATM_Card:
-    def __init__(self, account_number, pin_number):
-        self.account_number = account_number
-        self.pin_number = pin_number
-        
-    annual_fee = 150
-    maximum_daily_withdrawal = 40000
+    def __init__(self, atm_card):
+        self.__atm_card = atm_card
+        self.__out_money = 0
+        self.__annual_free = 150
+    @property
+    def out_money(self):
+        return self.__out_money
+    @out_money.setter
+    def out_money(self, monet_in_atm):
+        self.__out_money = monet_in_atm
+    @property
+    def pin_number(self):
+        return self.__atm_card
+    @property
+    def annual_free(self):
+        return self.__annual_free
     
+class Debit_Card(ATM_Card) :
+    def __init__(self, debit_card):
+        super().__init__(debit_card)
 
-class Transaction:
-    def __init__(self, balance):
-        self.__balance = balance
-    
-    
-class ATM:
-    def __init__(self, atm_number, amount_of_money_in_atm):
-        self.__atm_number = atm_number
-        self.__amount_of_money_in_atm = amount_of_money_in_atm
+class Transactions :
+    def __init__(self, account, monet_in_atm):
+        self.__account = account
+        self.__money = monet_in_atm
 
-    def insert_card(self, bank ,atm_number):
-        for user_instance in bank.user :
-            if user_instance.atm_number  == atm_number :
-                return user_instance.account
-        return 'None'
+    def Purchase(self, atm, account, paid, monet_in_atm):
+        if monet_in_atm > 0 and account.amount_of_money >= monet_in_atm :
+            account.amount_of_money -= monet_in_atm 
+            account.total_transactions.append(
+                f"P-ATM:{atm.atm_number}-{monet_in_atm}-{account.amount_of_money}")
+            account.debit_card.out_money += monet_in_atm
+            return "Success"
+        else:
+            return "Error"
 
-    def deposit(self, atm, account, money):
-        if money > 0 :
-            account.user.amount_of_money += money
-            account.user.get_transactions().append(f'D-ATM:{self.__atm_number}-{money}-{account.user.amount_of_money}')
-            return 'Success'
-        else : return 'Error'
+    def Deposit(self, atm, account, monet_in_atm):
+        if monet_in_atm > 0 :
+            account.amount_of_money += monet_in_atm
+            account.total_transactions.append(f"D-ATM:{atm.atm_number}-{monet_in_atm}-{account.amount_of_money}")
+            atm.monet_in_atm += monet_in_atm
+            return "Success"
+        else:
+            return "Error"
 
-    def withdraw(self, atm, account, money):
-        if money > 0 and account.user.amount_of_money >= money :
-            account.user.amount_of_money -= money
-            account.user.get_transactions().append(f'W-ATM:{self.__atm_number}-{money}-{account.user.amount_of_money}')
-            return 'Success'
-        else : return 'Error'   
+    def Withdraw(self, atm, account, monet_in_atm):
+        if monet_in_atm > 0 and account.amount_of_money >= monet_in_atm and atm.monet_in_atm >= monet_in_atm and account.atm_card.out_money <= 40000:
+            account.amount_of_money -= monet_in_atm
+            account.total_transactions.append(
+                f"W-ATM:{atm.atm_number}-{monet_in_atm}-{account.amount_of_money}")
+            atm.monet_in_atm -= monet_in_atm
+            account.atm_card.out_money += monet_in_atm
+            return "Success"
+        else:
+            return "Error"
 
-    def transfer(self, atm, transferor_account, transferee_account, money):
-        if money > 0 and transferor_account.user.amount_of_money >= money :
-            transferor_account.user.amount_of_money -= money
-            transferee_account.user.amount_of_money += money
-            transferor_account.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{transferor_account.user.amount_of_money}')
-            transferee_account.user.get_transactions().append(f'T-ATM:{self.__atm_number}-+{money}-{transferee_account.user.amount_of_money}')
-            return 'Success'
-        else : return 'Error'   
+    def Transfer(self, atm, account_own, account_transfer_to, monet_in_atm):
+        if monet_in_atm > 0 and account_own.amount_of_money >= monet_in_atm and account_own.atm_card.out_money<= 40000:
+            account_own.amount_of_money -= monet_in_atm
+            account_own.atm_card.out_money += monet_in_atm
+            account_transfer_to.amount_of_money += monet_in_atm
+            account_transfer_to.total_transactions.append(
+                f"T-ATM:{atm.atm_number}-+{monet_in_atm}-{account_transfer_to.amount_of_money}"
+            )
+            account_own.total_transactions.append(
+                f"T-ATM:{atm.atm_number}-+{monet_in_atm}-{account_own.amount_of_money}"
+            )
+            return "Success"
+        else:
+            return "Error"
             
     
 ##################################################################################
 
 # กำหนดรูปแบบของ user ดังนี้ {รหัสประชาชน : [ชื่อ, หมายเลขบัญชี, จำนวนเงิน, หมายเลข ATM ]}
 user = {'1-1101-12345-49-0':['Harry Potter','1234567890',20000,'12345'],
-       '1-1101-12345-50-0':['Hermione Jean Granger','0987654321',1000,'1234']}
+   '1-1101-12345-50-0':['Hermione Jean Granger','0987654321',1000,'1234']}
 
 atm = {'1001':1000000,'1002':200000} #หมายเลขตู้,เงินที่มีในตู้
 
@@ -117,8 +179,8 @@ for citizen_id, data in user.items():
     users.append(user_instance)
     
 atms = []
-for atm_number, data in atm.items():
-    atm_instance = ATM(atm_number, data)
+for atm_card, data in atm.items():
+    atm_instance = ATM(atm_card, data)
     atms.append(atm_instance)
     
 bank = Bank(users, atms)
@@ -131,7 +193,7 @@ bank = Bank(users, atms)
 # TODO :   และสร้าง instance ของเครื่อง ATM จำนวน 2 เครื่อง
 
 # TODO 2 : เขียน method ที่ทำหน้าที่สอดบัตรเข้าเครื่อง ATM มี parameter 2 ตัว ได้แก่ 1) instance ของธนาคาร
-# TODO     2) atm_number เป็นหมายเลขของ atm_number
+# TODO     2) atm_card เป็นหมายเลขของ atm_card
 # TODO     return ถ้าบัตรถูกต้องจะได้ instance ของ account คืนมา ถ้าไม่ถูกต้องได้เป็น None
 # TODO     ควรเป็น method ของเครื่อง ATM
 
@@ -162,13 +224,11 @@ bank = Bank(users, atms)
 print("\nTest case #1")
 print("Expected : 12345, 1234567890, Success")
 print("Actual\t : ", end='')
-
 accout = atms[0].insert_card(bank ,'12345')
 if accout != 'None':
-    print(f"{accout.user.atm_number}, {accout.user.account_number}, Success")
+    print(f"{accout.atm_card.pin_number}, {accout.user.account_number}, Success")
 else:
     print("Error")
-    
     
     
 # Test case #2 : ทดสอบฝากเงินเข้าในบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 1000 บาท
@@ -180,12 +240,9 @@ print("\nTest case #2")
 print("Expected :\nHermione account before test : 1000")
 print("Hermione account after\ttest : 2000")
 print("Actual\t :")
-
-print(f'Hermione account before test : {users[1].amount_of_money}')
-
-atms[1].deposit(atms[1], users[1].account, 1000)
-print(f'Hermione account after\ttest : {users[1].amount_of_money}')
-
+print(f"Hermione account before test : {users[1].account.amount_of_money}")
+users[1].account.transaction.Deposit(atms[1], users[1].account, 1000)
+print(f"Hermione account before test : {users[1].account.amount_of_money}\n")
 
 
 # Test case #3 : ทดสอบฝากเงินเข้าในบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน -1 บาท
@@ -193,9 +250,7 @@ print(f'Hermione account after\ttest : {users[1].amount_of_money}')
 print("\nTest case #3")
 print("Expected : Error")
 print("Actual\t : ", end='')
-
-print(atms[1].deposit(atms[1], users[1].account, -1))
-
+print(f"{users[1].account.transaction.Deposit(atms[1], users[1].account, -1)}\n")
 
 
 # Test case #4 : ทดสอบการถอนเงินจากบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 500 บาท
@@ -206,14 +261,9 @@ print(atms[1].deposit(atms[1], users[1].account, -1))
 print("\nTest case #4")
 print("Expected :\nHermione account before test : 2000\nHermione account after\ttest : 1500")
 print("Actual\t :")
-
-print("Hermione account before test : ", end='')
-print(f"{users[1].amount_of_money}")
-
-atms[1].withdraw(atms[1], users[1].account, 500)
-print("Hermione account after\ttest : ", end='')
-print(f"{users[1].amount_of_money}")
-
+print(f"Hermione account before test : {users[1].account.amount_of_money}")
+users[1].account.transaction.Withdraw(atms[1], users[1].account, 500)
+print(f"Hermione account after\ttest : {users[1].account.amount_of_money}\n")
 
 
 # Test case #5 : ทดสอบถอนเงินจากบัญชีของ Hermione ในเครื่อง atm เครื่องที่ 2 เป็นจำนวน 2000 บาท
@@ -221,9 +271,7 @@ print(f"{users[1].amount_of_money}")
 print("\nTest case #5")
 print("Expected : Error")
 print("Actual\t : ", end='')
-
-print(atms[1].deposit(atms[1], users[1].account, -2000))
-
+print(f"{users[1].account.transaction.Withdraw(atms[1], users[1].account, 2000)}\n")
 
 
 # Test case #6 : ทดสอบการโอนเงินจากบัญชีของ Harry ไปยัง Hermione จำนวน 10000 บาท ในเครื่อง atm เครื่องที่ 2
@@ -236,21 +284,11 @@ print(atms[1].deposit(atms[1], users[1].account, -2000))
 print("\nTest case #6")
 print("Expected :\nHarry\t account before test : 20000\nHermione account before test : 1500\nHarry\t account after\ttest : 10000\nHermione account after\ttest : 11500")
 print("Actual\t :")
-
-print("Harry\t account before test : ", end='')
-print(f"{users[0].amount_of_money}")
-
-print("Hermione account before test : ", end='')
-print(f"{users[1].amount_of_money}")
-
-atms[1].transfer(atms[1], users[0].account, users[1].account, 10000)
-
-print("Harry\t account after\ttest : ", end='')
-print(f"{users[0].amount_of_money}")
-
-print("Hermione account after\ttest : ", end='')
-print(f"{users[1].amount_of_money}")
-
+print(f"Harry\t account before test : {users[0].account.amount_of_money}")
+print(f"Hermione account before test : {users[1].account.amount_of_money}")
+users[0].account.transaction.Transfer(atms[1], users[0].account, users[1].account, 10000)
+print(f"Harry\t account after\ttest : {users[0].account.amount_of_money}")
+print(f"Hermione account after\ttest : {users[1].account.amount_of_money}\n")
 
 
 # Test case #7 : แสดง transaction ของ Hermione ทั้งหมด 
@@ -261,7 +299,6 @@ print(f"{users[1].amount_of_money}")
 print("\nTest case #7")
 print("Expected :\nHermione transaction : D-ATM:1002-1000-2000\nHermione transaction : W-ATM:1002-500-1500\nHermione transaction : T-ATM:1002-+10000-11500")
 print("Actual\t :")
-
-for transaction in users[1].get_transactions():
+for transaction in users[1].account.total_transactions:
     print(f"Hermione transaction : {transaction}")
 print("")
