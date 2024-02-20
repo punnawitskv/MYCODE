@@ -13,7 +13,7 @@ todos = [
     {
         "id": "1",
         "Activity": "Running"
-    },
+    },  
     {
         "id": "2",
         "Activity": "Walking"
