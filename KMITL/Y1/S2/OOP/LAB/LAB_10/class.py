@@ -1,8 +1,10 @@
 class Controller:
-    def __init__(self, users, coupons, payment_methods, categories, course_progresses) -> None:
+    def __init__(self) -> None:
         self.__users = User
         self.__coupons = Coupon
         self.__payment = Payment
+        self.__category = Category
+        self.__progress = Progress
         
 class User:
     def __init__(self, user_id, user_name, cart, orders, my_courses) -> None:
