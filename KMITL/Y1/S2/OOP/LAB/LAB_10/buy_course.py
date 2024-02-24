@@ -1,10 +1,10 @@
 class Controller:
-    def __init__(self) -> None:
-        self.__users = User
-        self.__coupons = Coupon
-        self.__payment = Payment
-        self.__category = Category
-        self.__progress = Progress
+    def __init__(self, user_input, coupon_input, payment_input, category_input, progress_input) -> None:
+        self.__users = user_input
+        self.__coupons = coupon_input
+        self.__payment = payment_input
+        self.__category = category_input
+        self.__progress = progress_input
         
     def get_course_from_course_id_ctrl(self, course_id_input):
         pass
@@ -12,7 +12,7 @@ class Controller:
     def get_teacher_from_course(self, course_input):
         pass
     
-    def validate_coupon(self, Course_input, coupon_id_input, teacher_input):
+    def validate_coupon(self, course_input, coupon_id_input, teacher_input):
         pass
     
     def create_order(self):
@@ -37,8 +37,9 @@ class Progress:
     
     
 class Category:
-    def __init__(self, courses_input) -> None:
-        self.__courses = Course
+    def __init__(self, category_input, courses_input) -> None:
+        self.__category = category_input
+        self.__courses = courses_input
     
     def get_course_from_course_id_ctgr(self, course_id_input):
         pass
@@ -53,38 +54,41 @@ class Teacher:
 
 
 class Course:
-    def __init__(self, video_input, quiz_input) -> None:
-        self.__video = video_input
-        self.__quiz = quiz_input
+    def __init__(self, category_input, course_id_input) -> None:
+        self.__category = category_input
+        self.__course_id = course_id_input
     
     
 class Order:
-    def __init__(self) -> None:
-        pass        
+    def __init__(self, payment_input) -> None:
+        self.__payment = payment_input
     
-    def create_payment(self):
+    def create_payment(self, status_input, amount_input, country_input, type_input):
         pass
     
     
 class Coupon:
-    def __init__(self, course_input) -> None:
-        self.__course = course_input
+    def __init__(self, coupon_input, amount_input) -> None:
+        self.coupon = coupon_input
+        self.amount = amount_input
     
-    def check_course(self, coupon_id_input, course_input):
+    def check_coupon_course(self, coupon_id_input, course_input):
         pass
     
-    def check_teacher(self, coupon_id_input, teacher_input):
+    def check_coupon_teacher(self, coupon_id_input, teacher_input):
         pass
     
     
 class CouponCourse:
-    def __init__(self, course_input) -> None:
+    def __init__(self, course_input, coupon_id_input) -> None:
         self.__course = course_input
+        self.__coupon_id = coupon_id_input
    
     
 class CouponTeacher:
-    def __init__(self, teacher_input) -> None:
+    def __init__(self, teacher_input, coupon_id_input) -> None:
         self.__teacher = teacher_input
+        self.__coupon_id = coupon_id_input
    
     
 class Payment:
