@@ -1,5 +1,5 @@
-const timeEl=document.querySelector(".time")
-const btnToggle=document.querySelector(".toggle")
+const timeEl = document.querySelector(".time")
+const btnToggle = document.querySelector(".toggle")
 
 function setTime(){
     // console.log(new Date())
