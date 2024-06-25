@@ -1,0 +1,38 @@
+*{
+    box-sizing: border-box;
+}
+body{
+    background: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+h1{
+    font-size: 40px;
+    font-weight: bold;
+    color: green;
+    margin: 30x;
+}
+.container{
+    width: 400px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+label{
+    color: green;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+input{
+    width: 100%;
+    padding: 15px 20px;
+    background: none;
+    outline: none;
+    border: 1px solid green;
+    color: green;
+    font-size: 25px;
+    margin-bottom: 20px;
+}
