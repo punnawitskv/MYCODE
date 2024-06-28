@@ -21,7 +21,7 @@ temperatureInputs.forEach(input=>{
             fahrenheitInput.value = fahrenheit.toFixed(2)
 
             let kelvin = temperatureValue + 273
-            kelvinInput.value = kelvin.toFixed(2    )
+            kelvinInput.value = kelvin.toFixed(2)
         }else if(inputName === "fahrenheit"){
             let kelvin = (temperatureValue - 32) / 1.8 + 273
             kelvinInput.value = kelvin.toFixed(2)
