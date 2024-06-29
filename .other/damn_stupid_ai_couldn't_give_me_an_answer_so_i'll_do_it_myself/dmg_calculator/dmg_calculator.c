@@ -3,8 +3,8 @@
 void damage_calculator(float atk, float def, float pen);
 
 int main(){
-    float atk[] = {1, 10, 100, 1000};
-    float def[] = {1, 10, 100, 1000};
+    float atk[] = {0, 1, 10, 100, 1000};
+    float def[] = {0, 1, 10, 100, 1000};
     float pen[] = {0, 1, 10, 100, 1000};
 
     for(int i = 0; i < sizeof(atk)/sizeof(atk[0]); i++){
@@ -14,7 +14,7 @@ int main(){
             }
             printf("\n");
         }
-        printf("********************************************************************\n\n");
+        printf("**************************************************************************\n\n");
     }
 
     return 0;
