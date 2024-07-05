@@ -27,6 +27,6 @@ def draw_pyramid(size):
         
         print("")
 
-size = input("Enter input : ")
-size = int(size)
+size = int(input("Enter input : "))
+
 draw_pyramid(size)
