@@ -19,9 +19,9 @@ def draw_pyramid(size):
                 map_num = abs(y)
         
             if map_num % 2 == 0:
-                print("#", end="  ")
+                print("#", end="")
             else:
-                print(".", end="  ")
+                print(".", end="")
                 
             # print(map_num, end=" ")
         
