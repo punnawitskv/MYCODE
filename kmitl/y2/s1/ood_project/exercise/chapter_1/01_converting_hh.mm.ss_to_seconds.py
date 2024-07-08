@@ -16,7 +16,7 @@ elif hh >= 24 or hh < 0:
     print(f"hh({hh}) is invalid!")
 else: 
     seconds = hh*60*60 + mm*60 + ss
-    formatted_secounds = "{:,}".format(seconds)
+    formatted_seconds = "{:,}".format(seconds)
         
     if hh < 10:
         hh = "0" + str(hh)
@@ -33,4 +33,4 @@ else:
     else:
         ss = str(ss)
         
-    print(f"{hh}:{mm}:{ss} = {formatted_secounds} seconds")
+    print(f"{hh}:{mm}:{ss} = {formatted_seconds} seconds")
