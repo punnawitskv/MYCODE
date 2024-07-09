@@ -29,12 +29,24 @@ class TorKham:
 	def restart(self):
 
 		### Enter Your Code Here ###
-
+		self.words = []
+		
 		return "game restarted"
 
 	def play(self, word):
+		word = word[2:]
 
 		### Enter Your Code Here ###
+		if self.words == []:
+			self.words.append(word)
+			return f"'{word}' -> {self.words}"
+		else:
+			for collected_word in self.words:
+				if collected_word[-2:].lower() == word[:2].lower():
+					self.words.append(word)
+					return f"'{word}' -> {self.words}"
+				else:
+					return f"'{word}' -> game over"
 
 		return "game over"
 
@@ -44,8 +56,16 @@ torkham = TorKham()
 
 print("*** TorKham HanSaa ***")
 
-
 S = input("Enter Input : ").split(',')
-for word in S:
-	print(word)
 ### Enter Your Code Here ###	
+for word in S:
+	# print(word)
+	if word[0] == "P":
+		print(torkham.play(word))
+	elif word[0] == "R":
+		print(torkham.restart())
+	elif word[0] == "X":
+		pass
+	else:
+		print(f"'{word}' is Invalid Input !!!")
+		break
