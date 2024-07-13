@@ -14,10 +14,66 @@
 
 # โดยรูปแบบการ run ดังนี้ :
 
-# q1 = Queue(string)
+class Queue:
+    def __init__(self, items):
+        self.queue = list(items)
+        self.queue_backup = list(items)
 
-# q2 = Queue(number)
+    def my_queue(self):
+        input_list = []
+        for char in self.queue_backup:
+            if char != ' ':
+                input_list.append(char)
+        return input_list
 
-# encodemsg(q1, q2)
+    def enqueue(self, item):
+        self.queue.append(item)
+        return
 
-# decodemsg(q1, q2)
+    def dequeue(self):
+        if not self.is_empty():
+            return self.queue.pop(0)
+        return None
+
+    def is_empty(self):
+        return len(self.queue) == 0
+
+def encodemsg(q1, q2):
+
+    encoded_message = []
+
+    while not q1.is_empty():
+        char = q1.dequeue()
+        if char != ' ':
+            shift = int(q2.dequeue())
+            new_char = shift_char(char, shift)
+            encoded_message.append(new_char)
+            q2.enqueue(shift)
+
+    print("Encode message is : ", encoded_message)
+    return
+
+
+def decodemsg(q1, q2):
+
+    decoded_message = q1.my_queue()
+
+    print("Decode message is : ", decoded_message)
+    return
+
+def shift_char(char, shift):
+    if char.isalpha():
+        offset = 65 if char.isupper() else 97
+        return chr((ord(char) - offset + shift) % 26 + offset)
+    return char
+
+input_str = input("Enter String and Code : ")
+strings_and_number = input_str.split(',')
+string, number = strings_and_number[0], strings_and_number[1]
+
+q1 = Queue(string)
+
+q2 = Queue(number)
+
+encodemsg(q1, q2)
+decodemsg(q1, q2)
