@@ -25,3 +25,86 @@
 # ฝั่งซ้าย = DDDFFFGGG
 # ฝั่งขวา = ABBBAACCC
 # ทำฝั่งขวาก่อนโดยการ inverse ABBBAACCC -> CCCAABBBA จะได้ระเบิดมา 3 ลูกคือ C B A ตามลำดับจากนั้นเก็บลง Queue ต่อมาดูที่ฝั่งซ้าย DDD จะเกิดการระเบิดเราจะนำ C ไปขัด | ต่อมา F จะระเบิดเราจะนำ B มาขัด | ต่อมา G จะระเบิดเราจะนำ A มาขัด   สุดท้ายจะกลายเป็น DDCDFFBFGGAG
+
+
+def mirror_explosive(mirror_input):
+    mirror_exploded_count = 0
+    mirror_color_queue = []
+    item_from_mirror = []
+
+    for color in mirror_input[::-1]:
+        try:
+            if color == mirror_color_queue[-1] and mirror_color_queue[-1] == mirror_color_queue[-2]:
+                mirror_exploded_count += 1
+                mirror_color_queue.pop()
+                mirror_color_queue.pop()
+                item_from_mirror.append(color)
+            else:
+                mirror_color_queue.append(color)
+        except IndexError:
+            mirror_color_queue.append(color)
+
+    return mirror_exploded_count, mirror_color_queue[::-1], item_from_mirror[::-1]
+
+
+def normal_explosive(normal_input, item_from_mirror):
+    normal_exploded_count = 0
+    normal_color_queue = []
+    failed_interrupted_bomb_count = 0
+
+    for color in normal_input:
+        try:
+            if color == normal_color_queue[-1] and normal_color_queue[-1] == normal_color_queue[-2]:
+                if len(item_from_mirror) > 0:
+                    if color != item_from_mirror[-1]:
+                        normal_color_queue.append(item_from_mirror.pop())
+                        normal_color_queue.append(color)
+                    else:
+                        normal_color_queue.pop()
+                        item_from_mirror.pop()
+                        failed_interrupted_bomb_count += 1
+                else:
+                    normal_exploded_count += 1
+                    normal_color_queue.pop()
+                    normal_color_queue.pop()
+            else:
+                normal_color_queue.append(color)
+        except IndexError:
+            normal_color_queue.append(color)
+
+    return normal_exploded_count, normal_color_queue, failed_interrupted_bomb_count
+
+
+normal_input, mirror_input = input("Enter Input (Normal, Mirror) : ").split(" ")
+
+mirror_exploded_count, mirror_color_queue, item_from_mirror = mirror_explosive(mirror_input)
+normal_exploded_count, normal_color_queue, failed_interrupted_bomb_count = normal_explosive(normal_input, item_from_mirror)
+
+print(f"NORMAL : ")
+
+print(len(normal_color_queue))
+
+if len(normal_color_queue) <= 0:
+    print("Empty", end="")
+else:
+    while len(normal_color_queue) > 0:
+        print(normal_color_queue.pop(), end="")
+
+print(f"\n{normal_exploded_count} Explosive(s) ! ! ! (NORMAL)")
+
+if failed_interrupted_bomb_count > 0:
+    print(f"Failed Interrupted {failed_interrupted_bomb_count} Bomb(s)")
+
+print("------------MIRROR------------")
+
+print(": RORRIM")
+
+print(len(mirror_color_queue))
+
+if len(mirror_color_queue) <= 0:
+    print("ytpmE", end="")
+else:
+    while len(mirror_color_queue) > 0:
+        print(mirror_color_queue.pop(0), end="")
+
+print(f"\n(RORRIM) ! ! ! (s)evisolpxE {mirror_exploded_count}")
