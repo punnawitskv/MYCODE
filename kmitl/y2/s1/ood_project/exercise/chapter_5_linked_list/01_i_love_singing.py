@@ -131,7 +131,6 @@ class LinkList:
             current = current.next
 
 
-
 def convertToLinkList(ls):
 
     # CODE HERE
