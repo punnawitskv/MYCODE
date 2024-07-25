@@ -1,104 +1,185 @@
-# จากการหา portal ในคราวก่อน น้องๆมอง "เขียนสวยๆกะทัดรัด ไม่งั้นจะส่งกลับไปเขียนใหม่" เป็นแค่ประโยคขู่เปล่าๆ ดังนั้นในข้อนี้จึงไม่มีข้อบังคับ แค่แลกมากับความยากนิดหน่อย ใช้ความขี้โกงของ python ให้เต็มที่ พี่ซันฟงไม่ได้ติดในฝัน ไม่มีนิยายให้อ่าน แต่รอบนี้พี่ต้องการโปรแกรมที่มีรายละเอียดดังนี้
-
-# Input
-
-# การเชื่อมต่อของ node แทนด้วย '>' ซึ่งแต่ละการเชื่อมต่อจะขั้นด้วย ','
-
-# รับประกันว่าจะไม่มีการ reassign node.next
-
-# หมายถึงจะไม่มี input แบบนี้: 1>2,1>3
-
-# Output
-
-# แสดงตัว node ที่ linked list เชื่อมเข้าหากัน (เรียงค่าจากน้อยไปมาก)
-
-# แสดงค่าและขนาด (ความยาว) ของ node นั้น โดยขนาดนับเริ่มตั้งแต่ตัวมันเองจนถึงตัวสุดท้ายหรือเจอตัวซ้ำ
-
-# หากไม่มีให้แสดงว่า "No intersection"
-
-# หากมี intersection ให้นำ node ที่เป็น intersection ออกไป แล้วนำ linked list ที่ไม่ใช่ circular มาเรียงใส่สลับกัน
-
-# อธิบาย test case 1
-
-# Input: 1>2,2>3,6>7,7>3,4>5,3>4
-
-# linked list ที่ได้จะมีลักษณะแบบนี้
-
-#   6 → 7 ↴
-
-# 1 → 2 → 3 → 4 → 5
-
-# intersection คือ 3
-
-# linked list ที่มี 3 เป็น head คือ 3 → 4 → 5
-
-# ทำให้ขนาดมีค่าเท่ากับ 3
-
-# จึงพิมพ์ Node(3, size=3) ออกมา
-
-# ต่อไปนำ node 3 ออกจะได้
-
-#   6 → 7 ↴
-
-# 1 → 2 →   → 4 → 5
-
-# นำ linked list มาเรียงใหม่ (เรียงด้วยค่าของ head จากน้อยไปมาก)
-
 class Node:
     def __init__(self, value):
         self.value = value
         self.next = None
-        self.previous = None
+
+    def __str__(self):
+        return str(self.value)
 
 
-user_input = input("Enter edges: ").split(',')
+class LinkedList:
+    def __init__(self):
+        self.head = Node(None)
+        self.tail = self.head
 
-tail_value_collect = []
-tail_node_collect = []
-head_value_collect = []
-head_node_collect = []
+    def __str__(self) -> str:
+        s = []
+        cur = self.head
+        while cur:
+            if not cur.value:
+                break
+            s.append(cur.value)
+            cur = cur.next
+        return " -> ".join(s)
 
-for linked_value in user_input:
-    head_value, tail_value = linked_value.split('>')
+    def value(self):
+        temp = []
+        cur = self.head.next
+        while cur:
+            if cur is self.tail:
+                break
+            temp.append(cur.value)
+            cur = cur.next
+        return temp
 
-    if head_value in (tail_value_collect):
-        for tail_node in (tail_node_collect):
-            if tail_node.value == head_value:
-                new_node = Node(tail_value)
-                tail_node.next = new_node
-                new_node.previous = tail_node
 
-                tail_node_collect.append(new_node)
-                tail_node_collect.remove(tail_node)
-                # tail_value_collect.remove(tail_value)
-                tail_value_collect.append(tail_value)
+def merge_list():
+    temp_listLinkedList = list_linkedlist[:]
+    for linkedlist1 in temp_listLinkedList:
+        for linkedlist2 in temp_listLinkedList:
+            if linkedlist1 in list_linkedlist and linkedlist2 in list_linkedlist:
+                if linkedlist1 is not linkedlist2:
+                    if linkedlist1.tail.value in linkedlist2.value() or linkedlist2.tail.value in linkedlist1.value():
+                        break
+                    if linkedlist1.head.value == linkedlist2.tail.value:
+                        linkedlist2.tail.next = linkedlist1.head.next
+                        linkedlist2.tail = linkedlist1.tail
+                        if linkedlist1 in list_linkedlist:
+                            list_linkedlist.remove(linkedlist1)
+                    elif linkedlist2.head.value == linkedlist1.tail.value:
+                        linkedlist1.tail.next = linkedlist2.head.next
+                        linkedlist1.tail = linkedlist2.tail
+                        if linkedlist2 in list_linkedlist:
+                            list_linkedlist.remove(linkedlist2)
 
-    elif tail_value in (head_value_collect):
-        for head_node in (head_node_collect):
-            if head_node.value == tail_value:
-                new_node = Node(head_value)
-                head_node.previos = new_node
-                new_node.next = head_node
 
-                head_node_collect.append(new_node)
-                head_node_collect.remove(head_node)
-                # head_value_collect.remove(head_value)
-                head_value_collect.append(head_value)
+ll = LinkedList()
+list_linkedlist = [ll]
+found = False
+inp = input("Enter edges: ").split(",")
 
+for section in inp:
+    data_n1, data_n2 = section.split(">")
+    n1 = Node(data_n1)
+    n2 = Node(data_n2)
+    n1.next = n2
+    for linkedlist in list_linkedlist:
+        if not linkedlist.head:
+            linkedlist.head = n1
+            linkedlist.tail = n2
+            break
+        else:
+            if n2.value in linkedlist.value():
+                continue
+            if linkedlist.head.value == n2.value:
+                n2.next = linkedlist.head.next
+                linkedlist.head = n1
+                break
+            elif linkedlist.tail.value == n1.value:
+                linkedlist.tail.next = n2
+                linkedlist.tail = n2
+                break
     else:
-        new_head_node = Node(head_value)
-        head_node_collect.append(new_head_node)
-        head_value_collect.append(head_value)
+        l2 = LinkedList()
+        l2.head = n1
+        l2.tail = n2
+        list_linkedlist.append(l2)
+    merge_list()
 
-        new_tail_node = Node(tail_value)
-        tail_node_collect.append(new_tail_node)
-        tail_value_collect.append(tail_value)
+dict_intersection_head = {}
+dict_intersection_tail = {}
+dict_intersection_size = {}
+for linkedlist1 in list_linkedlist:
+    for linkedlist2 in list_linkedlist[list_linkedlist.index(linkedlist1):]:
+        if linkedlist1 is not linkedlist2:
+            cur_node = linkedlist1.head
+            while cur_node:
+                if cur_node.value == linkedlist2.tail.value:
+                    dict_intersection_head.update(
+                        {linkedlist2.head.value: linkedlist2})
+                    dict_intersection_tail.update(
+                        {cur_node.value: linkedlist2.tail})
+                cur_node = cur_node.next
 
-        new_head_node.next = new_tail_node  
-        new_tail_node.previous = new_head_node
 
-for head_node in (head_node_collect):
-    if head_node.previous is None:
-        while head_node:
-            print(head_node.value, end=' -> ')
-            head_node = head_node.next
+list_node_pass = []
+found = False
+for intersection_tail_name, intersection_tail_node in dict_intersection_tail.items():
+    for linkedlist in list_linkedlist:
+        node_loop = linkedlist.head
+        while node_loop:
+            if node_loop.value == intersection_tail_name and node_loop is not intersection_tail_node:
+                cur = node_loop
+                list_node_pass = []
+                found = False
+                while cur:
+                    list_node_pass.append(cur)
+                    cur = cur.next
+                for linkedlist2 in list_linkedlist:
+                    if found and list_node_pass[-1].value != linkedlist2.head.value:
+                        found = False
+                    node_loop2 = linkedlist2.head
+                    while node_loop2:
+                        if node_loop2.value == list_node_pass[-1].value and node_loop2 not in list_node_pass:
+                            found = True
+                        if node_loop2 in list_node_pass:
+                            found = False
+                            break
+                        if found and node_loop2.value not in [i.value for i in list_node_pass]:
+                            list_node_pass.append(node_loop2)
+                        node_loop2 = node_loop2.next
+            node_loop = node_loop.next
+    dict_intersection_size.update(
+        {intersection_tail_name: len(list_node_pass)})
+
+
+for key, value in sorted(dict_intersection_size.items()):
+    print(f"Node({key}, size={value})")
+
+found = False
+temp_listLinkedlist = list_linkedlist[:]
+for linked in temp_listLinkedlist:
+    cur = linked.head
+    while cur:
+        for name, node in dict_intersection_tail.items():
+            if cur is node:
+                node.value = None
+                found = True
+            elif cur.value == name:
+                cur.value = None
+                l3 = LinkedList()
+                l3.head = cur.next
+                list_linkedlist.append(l3)
+                found = True
+        cur = cur.next
+    if not found:
+        list_linkedlist.remove(linked)
+
+s = ",".join(list(map(str, list_linkedlist)))
+s = s.replace(' -> ', " ")
+s = s.split(",")
+temp = []
+value = []
+max_length = 0
+for result in s:
+    if result:
+        list_number = list(map(int, result.split(" ")))
+        length = len(list_number)
+        temp.append(list_number)
+        if length > max_length:
+            max_length = length
+
+temp.sort()
+
+for i in range(max_length):
+    for list_number in temp:
+        try:
+            if list_number[i] not in value:
+                value.append(list_number[i])
+        except:
+            continue
+if len(value) > 0:
+    print("Delete intersection then swap merge:")
+    print(" -> ".join(list(map(str, value))))
+else:
+    print("No intersection")

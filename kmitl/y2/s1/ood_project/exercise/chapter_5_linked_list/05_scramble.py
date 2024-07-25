@@ -24,28 +24,104 @@ class Node:
 
 def createLL(LL):
     # Code Here
-    pass
+    if not LL:
+        return None
+    head = Node(LL[0])
+    current = head
+    for value in LL[1:]:
+        current.next = Node(value)
+        current = current.next
+    return head
 
 def printLL(head):
     # Code Here
-    pass
+    if head is None:
+        return "Empty"
+    result = []
+    current = head
+    while current:
+        result.append(str(current.value))
+        current = current.next
+    return " ".join(result)
 
 def SIZE(head):
     # Code Here
-    pass
+    count = 0
+    current = head
+    while current:
+        count += 1
+        current = current.next
+    return count
 
-def scarmble(head, b, r, size):
+def scramble(head, b, r, size):
     # Code Here
-    pass
+    head1 = bottom_up(head, b, size)
+    print(f"BottomUp {b:.3f} % : {printLL(head1)}")
+    head2 = riffle(head1, r, size)
+    print(f"Riffle {r:.3f} % : {printLL(head2)}")
+    return head1, head2
 
-inp1, inp2 = input('Enter Input : ').split('/')
+def splitLL(head, size):
+    if size == 0 or head is None:
+        return None, None
+    current = head
+    prev = None
+    for _ in range(size):
+        prev = current
+        current = current.next
+    if prev:
+        prev.next = None
+    return head, current
+
+def bottom_up(head, percent, size):
+    if head is None or size == 0:
+        return head
+    split_point = int(size * percent / 100)
+    if split_point == 0 or split_point == size:
+        return head
+    first_part, last_part = splitLL(head, split_point)
+    if not last_part:
+        return first_part
+    new_head = last_part
+    current = last_part
+    while current.next:
+        current = current.next
+    current.next = first_part
+    return new_head
+
+def riffle(head, percent, size):
+    if head is None or size == 0:
+        return head
+    riffle_point = int(size * percent / 100)
+    if riffle_point == 0 or riffle_point == size:
+        return head
+    first_part, last_part = splitLL(head, riffle_point)
+    dummy = Node(0)
+    current = dummy
+    while first_part and last_part:
+        current.next = first_part
+        first_part = first_part.next
+        current = current.next
+        current.next = last_part
+        last_part = last_part.next
+        current = current.next
+    current.next = first_part if first_part else last_part
+    return dummy.next
+
+inp1, inp2 = input("Enter Input : ").split("/")
 print('-' * 50)
-h = createLL(inp1.split())
 for i in inp2.split('|'):
+    h = createLL(inp1.split())
+    h1 = createLL(inp1.split())
+    h2 = createLL(inp1.split())
     print("Start : {0}".format(printLL(h)))
     k = i.split(',')
-    if k[0][0] == "B" and k[1][0] == "R":
-        scarmble(h, float(k[0][2:]), float(k[1][2:]), SIZE(h))
-    elif k[0][0] == "R" and k[1][0] == "B":
-        scarmble(h, float(k[1][2:]), float(k[0][2:]), SIZE(h))
-    print('-' * 50)
+    if k[0][0] == 'B' and k[1][0] == 'R':
+        h_bottom, h_riffle = scramble(h, float(k[0][2:]), float(k[1][2:]), SIZE(h))
+        print(f"Deriffle {float(k[1][2:]):.3f} % : {printLL(bottom_up(h2, float(k[0][2:]), SIZE(h2)))}")
+        print(f"Debottomup {float(k[0][2:]):.3f} % : {printLL(h1)}")
+    elif k[0][0] == 'R' and k[1][0] == 'B':
+        h_bottom, h_riffle = scramble(h, float(k[1][2:]), float(k[0][2:]), SIZE(h))
+        print(f"Deriffle {float(k[0][2:]):.3f} % : {printLL(bottom_up(h2, float(k[1][2:]), SIZE(h2)))}")
+        print(f"Debottomup {float(k[1][2:]):.3f} % : {printLL(h1)}")
+    print('-'*50)
