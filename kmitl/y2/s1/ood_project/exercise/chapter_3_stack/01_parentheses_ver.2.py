@@ -4,13 +4,17 @@ check = True
 stack = []
 
 for chr_i in user_input:
+
     if chr_i in "([{":
         stack.append(chr_i)
+
     elif chr_i in ")]}":
+
         if not stack:
             check = False
             break
         top = stack.pop()
+        
         if chr_i == ')' and top != '(':
             check = False
             break
