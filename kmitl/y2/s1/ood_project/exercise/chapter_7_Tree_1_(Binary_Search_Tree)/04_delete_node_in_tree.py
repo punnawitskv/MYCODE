@@ -71,6 +71,7 @@ class BinarySearchTree:
                 r.data = temp.data
                 r.right = self.delete(r.right, temp.data)
         return r
+        
                 
 def printTree90(node, level = 0):
     if node != None:
