@@ -125,9 +125,10 @@ class LinkList:
                 print(current.value, end='')
                 if (current.next) and (current.next.value not in seen):
                     print(end=" -> ")
-            elif current.next.value not in seen:
-                print(end=" -> ")
-
+            elif current.next:
+                if current.next.value not in seen:
+                    print(end=" -> ")
+                    
             current = current.next
 
 
