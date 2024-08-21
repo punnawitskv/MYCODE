@@ -1,11 +1,3 @@
-def generate_binary_numbers(n):
-    if n < 0:
-        return ["Only Positive & Zero Number ! ! !"]
-    elif n == 0:
-        return ["0"]
-    else:
-        return generate_binary_recursive(n, "", [])
-
 def generate_binary_recursive(n, current, result):
     if len(current) == n:
         result.append(current)
@@ -16,9 +8,13 @@ def generate_binary_recursive(n, current, result):
 
 
 inp = int(input("Enter Number : "))
+print(f'2^{inp} - 1 is {(2**inp) - 1}')
+
 if inp < 0:
     print("Only Positive & Zero Number ! ! !")
+elif inp == 0:
+    print("0")
 else:
-    results = generate_binary_numbers(inp)
+    results = generate_binary_recursive(inp, "", [])
     for number in results:
         print(number)
