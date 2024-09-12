@@ -73,14 +73,6 @@ class AVL_Tree(object):
             return 0
         return 1 + max(AVL_Tree.height_of_tree(node.left), AVL_Tree.height_of_tree(node.right))
 
-    def print_space(self, n, removed):
-        for _ in range(n):
-            print("  ", end="")
-        if removed is None:
-            print("  ", end="")
-        else:
-            print(removed.data, end=" ")
-
     def printTree(self):
         tree_level = []
         temp = []
@@ -88,20 +80,29 @@ class AVL_Tree(object):
         counter = 0
         height = AVL_Tree.height_of_tree(self.root) - 1
         number_of_elements = 2 ** (height + 1) - 1
+
+        def print_space(n, removed):
+            for _ in range(n):
+                print("  ", end="")
+            if removed is None:
+                print("  ", end="")
+            else:
+                print(removed.data, end=" ")
+
         while counter <= height:
             removed = tree_level.pop(0)
             if len(temp) == 0:
-                self.print_space(
-                    int(number_of_elements / (2 ** (counter + 1))), removed)
+                print_space(int(number_of_elements / (2 ** (counter + 1))), removed)
             else:
-                self.print_space(
-                    int(number_of_elements / (2 ** counter)), removed)
+                print_space(int(number_of_elements / (2 ** counter)), removed)
+
             if removed is None:
                 temp.append(None)
                 temp.append(None)
             else:
                 temp.append(removed.left)
                 temp.append(removed.right)
+
             if len(tree_level) == 0:
                 print("\n", end='')
                 tree_level = temp
@@ -109,9 +110,10 @@ class AVL_Tree(object):
                 counter += 1
 
 
-def burnTreeUtil(node, target, q):
+def _burnTree(node, target, q):
     if node is None:
         return 0
+    
     if node.data == target:
         print(node.data)
         if node.left is not None:
@@ -119,7 +121,8 @@ def burnTreeUtil(node, target, q):
         if node.right is not None:
             q.append(node.right)
         return 1
-    a = burnTreeUtil(node.left, target, q)
+    
+    a = _burnTree(node.left, target, q)
     if a == 1:
         q_size = len(q)
         while q_size:
@@ -135,7 +138,8 @@ def burnTreeUtil(node, target, q):
             q.append(node.right)
         print(node.data)
         return 1
-    b = burnTreeUtil(node.right, target, q)
+    
+    b = _burnTree(node.right, target, q)
     if b == 1:
         q_size = len(q)
         while q_size:
@@ -155,7 +159,7 @@ def burnTreeUtil(node, target, q):
 
 def burnTree(root, target):
     q = []
-    burnTreeUtil(root, target, q)
+    _burnTree(root, target, q)
     while q:
         q_size = len(q)
         while q_size:
@@ -178,7 +182,10 @@ root = None
 data, target = input("Enter node and burn node : ").split('/')
 for e in data.split():
     root = myTree.insert(root, e)
+
 myTree.printTree()
+
 if target not in data:
     print(f"There is no {target} in the tree.")
+
 burnTree(root, int(target))
