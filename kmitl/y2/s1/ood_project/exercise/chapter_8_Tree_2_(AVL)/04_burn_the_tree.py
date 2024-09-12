@@ -8,10 +8,10 @@ class TreeNode(object):
     def setHeight(self):
         a = self.getHeight(self.left)
         b = self.getHeight(self.right)
-        self.height = 1 + max(a,b)
+        self.height = 1 + max(a, b)
         return self.height
 
-    def getHeight(self, node = None):
+    def getHeight(self, node=None):
         return -1 if node == None else node.height
 
     def balanceValue(self):
@@ -20,8 +20,9 @@ class TreeNode(object):
     def __str__(self):
         return str(self.data)
 
+
 class AVL_Tree(object):
-    def __init__(self, root = None):
+    def __init__(self, root=None):
         self.root: TreeNode = None if root is None else root
 
     def insert(self, root, data):
@@ -66,10 +67,12 @@ class AVL_Tree(object):
                 node.left = AVL_Tree.rotateRightChild(node.left)
             node = AVL_Tree.rotateLeftChild(node)
         return node
+
     def height_of_tree(node: TreeNode):
         if node is None:
             return 0
         return 1 + max(AVL_Tree.height_of_tree(node.left), AVL_Tree.height_of_tree(node.right))
+
     def print_space(self, n, removed):
         for _ in range(n):
             print("  ", end="")
@@ -77,6 +80,7 @@ class AVL_Tree(object):
             print("  ", end="")
         else:
             print(removed.data, end=" ")
+
     def printTree(self):
         tree_level = []
         temp = []
@@ -87,9 +91,11 @@ class AVL_Tree(object):
         while counter <= height:
             removed = tree_level.pop(0)
             if len(temp) == 0:
-                self.print_space(int(number_of_elements / (2 ** (counter + 1))), removed)
+                self.print_space(
+                    int(number_of_elements / (2 ** (counter + 1))), removed)
             else:
-                self.print_space(int(number_of_elements / (2 ** counter)), removed)
+                self.print_space(
+                    int(number_of_elements / (2 ** counter)), removed)
             if removed is None:
                 temp.append(None)
                 temp.append(None)
@@ -97,10 +103,11 @@ class AVL_Tree(object):
                 temp.append(removed.left)
                 temp.append(removed.right)
             if len(tree_level) == 0:
-                print("\n",end='')
+                print("\n", end='')
                 tree_level = temp
                 temp = []
                 counter += 1
+
 
 def burnTreeUtil(node, target, q):
     if node is None:
@@ -144,6 +151,8 @@ def burnTreeUtil(node, target, q):
             q.append(node.left)
         print(node.data)
         return 1
+
+
 def burnTree(root, target):
     q = []
     burnTreeUtil(root, target, q)
@@ -157,10 +166,11 @@ def burnTree(root, target):
             if temp.right is not None:
                 q.append(temp.right)
             if len(q) != 1:
-                print(' ',end = '')
+                print(' ', end='')
             q.pop(0)
             q_size -= 1
         print()
+
 
 myTree = AVL_Tree()
 root = None
