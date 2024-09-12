@@ -1,193 +1,174 @@
-class AVLTree:
+class TreeNode(object):
+    def __init__(self, val):
+        self.data = val
+        self.left = None
+        self.right = None
+        self.height = self.setHeight()
 
-    class AVLNode:
+    def setHeight(self):
+        a = self.getHeight(self.left)
+        b = self.getHeight(self.right)
+        self.height = 1 + max(a,b)
+        return self.height
 
-        def __init__(self, data, left=None, right=None):
-            self.data = data
-            self.left = None if left is None else left
-            self.right = None if right is None else right
-            self.height = self.setHeight()
-            self.parent = None  
+    def getHeight(self, node = None):
+        return -1 if node == None else node.height
 
-        def __str__(self):
-            return str(self.data)
+    def balanceValue(self):
+        return self.getHeight(self.left) - self.getHeight(self.right)
 
-        def setHeight(self):
-            a = self.getHeight(self.left)
-            b = self.getHeight(self.right)
-            self.height = 1 + max(a, b)
-            return self.height
+    def __str__(self):
+        return str(self.data)
 
-        def getHeight(self, node):
-            return -1 if node == None else node.height
+class AVL_Tree(object):
+    def __init__(self, root = None):
+        self.root: TreeNode = None if root is None else root
 
-        def balanceValue(self):
-            return self.getHeight(self.right) - self.getHeight(self.left)
+    def insert(self, root, data):
+        data = int(data)
+        self.root = AVL_Tree._insert(root, data)
+        return self.root
 
-    def __init__(self, root=None):
-        self.root = None if root is None else root
-
-    def add(self, data):
-        self.root = self._add(self.root, data)
-
-    def _add(self, root, data):
-        if root is None:
-            return AVLTree.AVLNode(data)
-
-        if int(data) < int(root.data):
-            root.left = self._add(root.left, data)
-            if root.left:
-                root.left.parent = root
+    def _insert(root, data):
+        if not root:
+            return TreeNode(data)
+        if data < root.data:
+            root.left = AVL_Tree._insert(root.left, data)
         else:
-            root.right = self._add(root.right, data)
-            if root.right:
-                root.right.parent = root    
-
-        root = self._balance(root)
-        return root
-
-    def _balance(self, root):
-        if root.balanceValue() > 1:
-            if root.right and root.right.balanceValue() < 0:
-                root.right = self.rotateRightChild(root.right)
-            root = self.rotateLeftChild(root)
-        elif root.balanceValue() < -1:
-            if root.left and root.left.balanceValue() > 0:
-                root.left = self.rotateLeftChild(root.left)
-            root = self.rotateRightChild(root)
-        else:
-            root.setHeight()
-        return root
-
-    def rotateLeftChild(self, root):
-        newRoot = root.right
-        root.right = newRoot.left
-        newRoot.left = root
+            root.right = AVL_Tree._insert(root.right, data)
         root.setHeight()
+        return AVL_Tree._rebalance(root)
+
+    def rotateLeftChild(node: TreeNode):
+        newRoot = node.left
+        node.left = newRoot.right
+        newRoot.right = node
+        node.setHeight()
         newRoot.setHeight()
         return newRoot
 
-    def rotateRightChild(self, root):
-        newRoot = root.left
-        root.left = newRoot.right
-        newRoot.right = root
-        root.setHeight()
+    def rotateRightChild(node: TreeNode):
+        newRoot = node.right
+        node.right = newRoot.left
+        newRoot.left = node
+        node.setHeight()
         newRoot.setHeight()
         return newRoot
 
-    def postOrder(self):
-        print('AVLTree post-order : ', end='')
-        result = []
-        self._postOrder(self.root, result)
-        print(' '.join(result))
-
-    def _postOrder(self, root, result):
-        if root is not None:
-            self._postOrder(root.left, result)
-            self._postOrder(root.right, result)
-            result.append(root.data)
-
-    def bfs(self):
-            if not self.root:
-                return []
-
-            res = []
-            queue = [(self.root, 0)]
-
-            while queue:
-                node, level = queue.pop(0)
-                if level == len(res):
-                    res.append([])
-                if node:
-                    res[level].append(node.data)
-                    queue.append((node.left, level + 1))
-                    queue.append((node.right, level + 1))
-                else:
-                    res[level].append(None)
-
-            return res
-
+    def _rebalance(node: TreeNode):
+        balance = node.balanceValue()
+        if balance == -2:
+            if node.right.balanceValue() == 1:
+                node.right = AVL_Tree.rotateLeftChild(node.right)
+            node = AVL_Tree.rotateRightChild(node)
+        elif balance == 2:
+            if node.left.balanceValue() == -1:
+                node.left = AVL_Tree.rotateRightChild(node.left)
+            node = AVL_Tree.rotateLeftChild(node)
+        return node
+    def height_of_tree(node: TreeNode):
+        if node is None:
+            return 0
+        return 1 + max(AVL_Tree.height_of_tree(node.left), AVL_Tree.height_of_tree(node.right))
+    def print_space(self, n, removed):
+        for _ in range(n):
+            print("  ", end="")
+        if removed is None:
+            print("  ", end="")
+        else:
+            print(removed.data, end=" ")
     def printTree(self):
-        if not self.root:
-            print("Tree is empty.")
-            return
+        tree_level = []
+        temp = []
+        tree_level.append(self.root)
+        counter = 0
+        height = AVL_Tree.height_of_tree(self.root) - 1
+        number_of_elements = 2 ** (height + 1) - 1
+        while counter <= height:
+            removed = tree_level.pop(0)
+            if len(temp) == 0:
+                self.print_space(int(number_of_elements / (2 ** (counter + 1))), removed)
+            else:
+                self.print_space(int(number_of_elements / (2 ** counter)), removed)
+            if removed is None:
+                temp.append(None)
+                temp.append(None)
+            else:
+                temp.append(removed.left)
+                temp.append(removed.right)
+            if len(tree_level) == 0:
+                print("\n",end='')
+                tree_level = temp
+                temp = []
+                counter += 1
 
-        treeArray = self.bfs()
-        h = len(treeArray)
-        
-        width = 2**h - 1
-        current_level = 0
+def burnTreeUtil(node, target, q):
+    if node is None:
+        return 0
+    if node.data == target:
+        print(node.data)
+        if node.left is not None:
+            q.append(node.left)
+        if node.right is not None:
+            q.append(node.right)
+        return 1
+    a = burnTreeUtil(node.left, target, q)
+    if a == 1:
+        q_size = len(q)
+        while q_size:
+            temp = q[0]
+            print(temp.data, end=' ')
+            q.pop(0)
+            if temp.left is not None:
+                q.append(temp.left)
+            if temp.right is not None:
+                q.append(temp.right)
+            q_size -= 1
+        if node.right is not None:
+            q.append(node.right)
+        print(node.data)
+        return 1
+    b = burnTreeUtil(node.right, target, q)
+    if b == 1:
+        q_size = len(q)
+        while q_size:
+            temp = q[0]
+            print(temp.data, end=' ')
+            q.pop(0)
+            if temp.left is not None:
+                q.append(temp.left)
+            if temp.right is not None:
+                q.append(temp.right)
+            q_size -= 1
+        if node.left is not None:
+            q.append(node.left)
+        print(node.data)
+        return 1
+def burnTree(root, target):
+    q = []
+    burnTreeUtil(root, target, q)
+    while q:
+        q_size = len(q)
+        while q_size:
+            temp = q[0]
+            print(temp.data, end='')
+            if temp.left is not None:
+                q.append(temp.left)
+            if temp.right is not None:
+                q.append(temp.right)
+            if len(q) != 1:
+                print(' ',end = '')
+            q.pop(0)
+            q_size -= 1
+        print()
 
-        def printSpaces(n):
-            return " " * n
+myTree = AVL_Tree()
+root = None
 
-        for level in treeArray:
-            if not level:
-                continue
-            # Calculate the amount of space between nodes
-            level_width = width // (2 ** current_level)
-            line = ""
-            for i, x in enumerate(level):
-                if x is None:
-                    line += printSpaces(level_width) + " "
-                else:
-                    line += printSpaces(level_width - len(str(x)) // 2) + str(x) + printSpaces(level_width - len(str(x)) // 2)
-                line += printSpaces(level_width)  # Space between nodes
-            print(line.rstrip())
-            current_level += 1
-
-    def find_node(self, root, data):
-        if root is None:
-            return None
-        if root.data == data:
-            return root
-        elif data < root.data:
-            return self.find_node(root.left, data)
-        else:
-            return self.find_node(root.right, data)
-
-    def spread_fire(self, start_data):
-        start_node = self.find_node(self.root, start_data)
-        if start_node is None:
-            print("Start node not found.")
-            return
-
-        burnt = set()
-        fire_queue = [start_node]
-        minute = 0
-
-        while fire_queue:
-            current_level = []
-            next_fire_queue = []
-
-            for node in fire_queue:
-                if node.data not in burnt:
-                    burnt.add(node.data)
-                    current_level.append(node.data)
-
-                    if node.left and node.left.data not in burnt:
-                        next_fire_queue.append(node.left)
-
-                    if node.right and node.right.data not in burnt:
-                        next_fire_queue.append(node.right)
-
-                    if node.parent and node.parent.data not in burnt:
-                        next_fire_queue.append(node.parent)
-
-            print(f"{' '.join(map(str, current_level))}")
-            fire_queue = next_fire_queue
-            minute += 1
-
-
-avl1 = AVLTree()
-
-inp = input('Enter node and burn node : ').split('/')
-node = inp[0].split(' ')
-first_burn = inp[1]
-
-for i in node:
-        avl1.add(i)
-
-avl1.printTree()
-
-avl1.spread_fire(first_burn)
+data, target = input("Enter node and burn node : ").split('/')
+for e in data.split():
+    root = myTree.insert(root, e)
+myTree.printTree()
+if target not in data:
+    print(f"There is no {target} in the tree.")
+burnTree(root, int(target))
