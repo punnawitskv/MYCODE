@@ -30,7 +30,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Hello, World!'),
       ),
     );
