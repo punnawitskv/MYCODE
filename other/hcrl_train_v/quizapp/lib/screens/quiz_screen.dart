@@ -100,7 +100,7 @@ class _QuizScreenState extends State<QuizScreen> {
               height: 10,
             ),
             Text(
-              "Questions ${currentQuestion + 1}/${totalQuestion}",
+              "Questions ${currentQuestion + 1}/$totalQuestion",
               style: GoogleFonts.prompt(
                   color: Colors.white,
                   fontSize: 16,
