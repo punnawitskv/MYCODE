@@ -23,18 +23,19 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       SystemChrome.setSystemUIOverlayStyle(
-          // ignore: prefer_const_constructors
-          SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+          const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
 
       if (APIs.auth.currentUser != null) {
         log('\nUser: ${APIs.auth.currentUser}');
         Navigator.pushReplacement(
             // ignore: use_build_context_synchronously
-            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+            context,
+            MaterialPageRoute(builder: (_) => const HomeScreen()));
       } else {
         Navigator.pushReplacement(
             // ignore: use_build_context_synchronously
-            context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+            context,
+            MaterialPageRoute(builder: (_) => const LoginScreen()));
       }
     });
   }

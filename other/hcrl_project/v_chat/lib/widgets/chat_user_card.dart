@@ -1,9 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v_chat/main.dart';
+import 'package:v_chat/models/chat_user.dart';
 
 class ChatUserCard extends StatefulWidget {
-  const ChatUserCard({super.key});
+  final ChatUser user;
+
+  const ChatUserCard({super.key, required this.user});
 
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
@@ -20,19 +24,45 @@ class _ChatUserCardState extends State<ChatUserCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
         onTap: () {},
-        child: const ListTile(
-          leading: CircleAvatar(
-            child: Icon(CupertinoIcons.person),
+        child: ListTile(
+          //user proflie pic
+          // leading: const CircleAvatar(
+          //   child: Icon(CupertinoIcons.person),
+          // ),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(mq.height * .3),
+            child: CachedNetworkImage(
+              width: mq.height * .055,
+              height: mq.height * .055,
+              imageUrl: widget.user.image,
+              errorWidget: (context, url, error) =>
+                  const CircleAvatar(child: Icon(CupertinoIcons.person)),
+            ),
           ),
-          title: Text('Demo User'),
+
+          //user name
+          title: Text(widget.user.name),
+
+          //last message
           subtitle: Text(
-            'Last user message',
+            widget.user.about,
             maxLines: 1,
           ),
-          trailing: Text(
-            '12:00 PM',
-            style: TextStyle(color: Colors.black54),
+
+          //las message time
+          trailing: Container(
+            width: 15,
+            height: 15,
+            decoration: BoxDecoration(
+              color: Colors.lightGreenAccent,
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
+
+          // trailing: const Text(
+          //   '12:00 PM',
+          //   style: TextStyle(color: Colors.black54),
+          // ),
         ),
       ),
     );
