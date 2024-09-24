@@ -252,6 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fixedSize: Size(mq.width * .3, mq.height * .15)),
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
+
                         // Pick an image.
                         final XFile? image =
                             await picker.pickImage(source: ImageSource.gallery);
@@ -260,6 +261,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           setState(() {
                             _image = image.path;
                           });
+
+                          APIs.updateProfilePicture(File(_image!));
+
                           // ignore: use_build_context_synchronously
                           Navigator.pop(context);
                         }
@@ -275,7 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fixedSize: Size(mq.width * .3, mq.height * .15)),
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
-                        // Pick an image.
+
+                        // Camera an image.
                         final XFile? image =
                             await picker.pickImage(source: ImageSource.camera);
                         if (image != null) {
@@ -283,6 +288,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           setState(() {
                             _image = image.path;
                           });
+
+                          APIs.updateProfilePicture(File(_image!));
+
                           // ignore: use_build_context_synchronously
                           Navigator.pop(context);
                         }
