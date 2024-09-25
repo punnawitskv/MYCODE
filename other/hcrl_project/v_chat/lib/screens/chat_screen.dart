@@ -22,10 +22,14 @@ class _ChatScreenState extends State<ChatScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: _appBar(),
         ),
+        body: Column(
+          children: [_chatInput()],
+        ),
       ),
     );
   }
 
+  // app bar widget
   Widget _appBar() {
     return InkWell(
       onTap: () {},
@@ -83,6 +87,83 @@ class _ChatScreenState extends State<ChatScreen> {
                     fontWeight: FontWeight.w600),
               )
             ],
+          )
+        ],
+      ),
+    );
+  }
+
+  // bottom chat input field
+  Widget _chatInput() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: mq.height * .01, horizontal: mq.width * .025),
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  // emo btn
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.emoji_emotions,
+                        color: Colors.teal,
+                        size: 25,
+                      )),
+
+                  Expanded(
+                      child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                        hintText: 'type something...',
+                        hintStyle: TextStyle(color: Colors.teal[200]),
+                        border: InputBorder.none),
+                  )),
+
+                  // pick img btn
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.image,
+                      color: Colors.teal,
+                      size: 26,
+                    ),
+                  ),
+
+                  // take img cameera btn
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.teal,
+                      size: 26,
+                    ),
+                  ),
+
+                  SizedBox(width: mq.width * .02),
+                ],
+              ),
+            ),
+          ),
+
+          // send msg btn
+          MaterialButton(
+            onPressed: () {},
+            minWidth: 0,
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 10),
+            shape: const CircleBorder(),
+            color: Colors.teal,
+            child: const Icon(
+              Icons.send,
+              color: Colors.white,
+              size: 28,
+            ),
           )
         ],
       ),
