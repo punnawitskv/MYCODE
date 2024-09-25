@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:v_chat/api/apis.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/chat_user.dart';
+import 'package:v_chat/models/message.dart';
+import 'package:v_chat/widgets/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -18,6 +20,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  // storage of all msg
+  List<Message> _list = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,7 +57,23 @@ class _ChatScreenState extends State<ChatScreen> {
                       //     data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
                       //         [];
 
-                      final _list = ['hi', 'hello'];
+                      _list.clear();
+
+                      _list.add(Message(
+                          toId: 'xyz',
+                          msg: 'hi',
+                          read: '',
+                          type: Type.text,
+                          fromId: APIs.user.uid,
+                          sent: '12:00 AM'));
+
+                      _list.add(Message(
+                          toId: APIs.user.uid,
+                          msg: 'hello',
+                          read: '',
+                          type: Type.text,
+                          fromId: 'xyz',
+                          sent: '12:05 AM'));
 
                       if (_list.isNotEmpty) {
                         return ListView.builder(
@@ -60,14 +81,14 @@ class _ChatScreenState extends State<ChatScreen> {
                             padding: EdgeInsets.only(top: mq.height * .01),
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return Text('Message: ${_list[index]}');
+                              return MessageCard(
+                                message: _list[index],
+                              );
                             });
                       } else {
                         return const Center(
-                          child: Text(
-                            'Say Hi! 👋',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          child: Text('Say Hi! 👋',
+                              style: TextStyle(fontSize: 20)),
                         );
                       }
                   }
