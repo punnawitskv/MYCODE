@@ -21,6 +21,7 @@ def bubble_sort(inp):
                 swap = True
                 move = inp[i+1]
             i += 1
+            
         inp_prev = list(inp)
         move_prev = move
         num_step += 1
