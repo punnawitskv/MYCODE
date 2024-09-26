@@ -32,6 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
           flexibleSpace: _appBar(),
         ),
 
+        // backgroundColor: Colors.teal.shade100,
+
         // body
         body: Column(
           children: [
