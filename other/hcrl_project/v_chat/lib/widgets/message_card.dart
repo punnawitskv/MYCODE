@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:v_chat/api/apis.dart';
+import 'package:v_chat/helper/my_date_util.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/message.dart';
 
@@ -20,8 +21,12 @@ class _MessageCardState extends State<MessageCard> {
         : _tealMessage();
   }
 
-  // sender or abother user message
+  // sender or another user message
   Widget _tealMessage() {
+    if (widget.message.read.isEmpty) {
+      APIs.updateMessageReadStatus(widget.message);
+    }
+
     return Row(
       // make message and date between
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +54,8 @@ class _MessageCardState extends State<MessageCard> {
         Padding(
           padding: EdgeInsets.only(right: mq.width * .04),
           child: Text(
-            widget.message.sent,
+            MyDateUtil.getFormattedTime(
+                context: context, time: widget.message.sent),
             style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
@@ -66,13 +72,16 @@ class _MessageCardState extends State<MessageCard> {
         Row(
           children: [
             SizedBox(width: mq.width * .04),
-            const Icon(Icons.done_all_rounded, color: Colors.teal, size: 20),
+
+            if (widget.message.read.isNotEmpty)
+              const Icon(Icons.done_all_rounded, color: Colors.teal, size: 20),
 
             const SizedBox(width: 2),
 
-            // read time
+            // sent time
             Text(
-              widget.message.read,
+              MyDateUtil.getFormattedTime(
+                  context: context, time: widget.message.sent),
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
