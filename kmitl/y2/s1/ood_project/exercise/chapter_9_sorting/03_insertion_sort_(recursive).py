@@ -5,7 +5,6 @@ def insertion_sort_recursive(arr, index=0):
         return
 
     key = arr[index]
-    
     insert_index = insert_recursive(arr, key, index)
     
     if index > 0:
