@@ -10,9 +10,23 @@ def parse_input(input_str):
     return data
 
 def custom_sort(data):
-    for i in range(len(data)):
-        for j in range(0, len(data) - i - 1):
-            if (data[j][1] < data[j + 1][1]) or (data[j][1] == data[j + 1][1] and data[j][2] < data[j + 1][2]):
+    range_i = range(len(data))
+
+    # for i in range(len(data)):
+    for i in range_i:
+        range_j = range(0, len(data) - i - 1)
+
+        # for j in range(0, len(data) - i - 1):
+        for j in range_j:
+
+            j_team_gd = data[j][2]
+            j_team_points = data[j][1]
+
+            k = j + 1
+            k_team_gd = data[k][2]
+            k_team_point = data[k][1]
+            
+            if (j_team_points < k_team_point) or (j_team_points == k_team_point and j_team_gd < k_team_gd):
                 data[j], data[j + 1] = data[j + 1], data[j]
 
 def generate_results(data):

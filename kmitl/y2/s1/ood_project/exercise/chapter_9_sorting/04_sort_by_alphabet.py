@@ -9,7 +9,9 @@ def custom_sort(arr):
         for i in range(1, len(arr)):
             key = arr[i]
             j = i - 1
-            while j >= 0 and get_alpha(arr[j]) > get_alpha(key):
+            alpha_arr_j = get_alpha(arr[j])
+            alpha_key = get_alpha(key)
+            while j >= 0 and alpha_arr_j > alpha_key:
                 arr[j + 1] = arr[j]
                 j -= 1
             arr[j + 1] = key
