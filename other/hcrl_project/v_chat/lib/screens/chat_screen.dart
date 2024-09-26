@@ -98,9 +98,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 color: Colors.white,
               )),
 
-          // some space
-          const SizedBox(height: 100),
-
           // user profile
           ClipRRect(
             borderRadius: BorderRadius.circular(mq.height * .3),

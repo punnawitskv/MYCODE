@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           // app bar
           appBar: AppBar(
-            leading: const Icon(CupertinoIcons.home),
+            // leading: const Icon(CupertinoIcons.home),
             title: _isSearching
                 ? TextField(
                     decoration: const InputDecoration(
