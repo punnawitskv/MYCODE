@@ -1,7 +1,11 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:v_chat/api/apis.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/chat_user.dart';
@@ -185,38 +189,16 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Row(
                 children: [
                   // emo btn
-                  // IconButton(
-                  //     onPressed: () {
-                  //       FocusScope.of(context).unfocus();
-                  //       setState(() => _showEmoji = !_showEmoji);
-                  //     },
-                  //     icon: const Icon(
-                  //       Icons.emoji_emotions,
-                  //       color: Colors.teal,
-                  //       size: 25,
-                  //     )),
-
-                  SizedBox(width: mq.width * .02),
-
-                  // pick img btn
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.image,
-                      color: Colors.teal,
-                      size: 26,
-                    ),
-                  ),
-
-                  // take img camera btn
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.teal,
-                      size: 26,
-                    ),
-                  ),
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        setState(() => _showEmoji = !_showEmoji);
+                      },
+                      icon: const Icon(
+                        Icons.emoji_emotions,
+                        color: Colors.teal,
+                        size: 25,
+                      )),
 
                   Expanded(
                       child: TextField(
@@ -232,6 +214,39 @@ class _ChatScreenState extends State<ChatScreen> {
                         border: InputBorder.none),
                   )),
 
+                  // pick img btn
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.image,
+                      color: Colors.teal,
+                      size: 26,
+                    ),
+                  ),
+
+                  // take img cameera btn
+                  IconButton(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      // Pick an image
+                      final XFile? image = await picker.pickImage(
+                          source: ImageSource.camera, imageQuality: 70);
+                      if (image != null) {
+                        log('Image Path: ${image.path}');
+                        // setState(() => _isUploading = true);
+
+                        await APIs.sendChatImage(widget.user, File(image.path));
+                        // setState(() => _isUploading = false);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.teal,
+                      size: 26,
+                    ),
+                  ),
+
                   SizedBox(width: mq.width * .02),
                 ],
               ),
@@ -242,7 +257,7 @@ class _ChatScreenState extends State<ChatScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                APIs.sendMessage(widget.user, _textController.text);
+                APIs.sendMessage(widget.user, _textController.text, Type.text);
                 _textController.text = '';
               }
             },
