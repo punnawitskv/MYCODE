@@ -20,6 +20,9 @@ class _MessageCardState extends State<MessageCard> {
     bool isMe = APIs.user.uid == widget.message.fromId;
 
     return InkWell(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // ซ่อนแป้นพิมพ์เมื่อกดนอกฟิลด์ข้อความ
+      },
       onLongPress: () {
         _showBottomSheet(isMe);
       },
