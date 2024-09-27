@@ -17,13 +17,18 @@ class MessageCard extends StatefulWidget {
 class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    return APIs.user.uid == widget.message.fromId
-        ? _greenMessage()
-        : _tealMessage();
+    bool isMe = APIs.user.uid == widget.message.fromId;
+
+    return InkWell(
+      onLongPress: () {
+        _showBottomSheet(isMe);
+      },
+      child: isMe ? _rightMessage() : _leftMessage(),
+    );
   }
 
   // sender or another user message
-  Widget _tealMessage() {
+  Widget _leftMessage() {
     if (widget.message.read.isEmpty) {
       APIs.updateMessageReadStatus(widget.message);
     }
@@ -90,7 +95,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   // our or user message
-  Widget _greenMessage() {
+  Widget _rightMessage() {
     return Row(
       // make message and date between
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,6 +162,153 @@ class _MessageCardState extends State<MessageCard> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showBottomSheet(bool isMe) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            children: [
+              Container(
+                height: 4,
+                margin: EdgeInsets.symmetric(
+                    vertical: mq.height * .015, horizontal: mq.width * .4),
+                decoration: BoxDecoration(
+                    color: Colors.teal, borderRadius: BorderRadius.circular(8)),
+              ),
+
+              widget.message.type == Type.text
+                  ?
+                  // copy
+                  _OptionItem(
+                      icon: const Icon(
+                        Icons.copy_all_rounded,
+                        color: Colors.teal,
+                        size: 26,
+                      ),
+                      name: 'Copy Text',
+                      onTap: () {},
+                    )
+                  :
+                  // save img
+                  _OptionItem(
+                      icon: const Icon(
+                        Icons.download,
+                        color: Colors.teal,
+                        size: 26,
+                      ),
+                      name: 'Save Image',
+                      onTap: () {},
+                    ),
+
+              if (isMe)
+                Divider(
+                  endIndent: mq.width * .04,
+                  indent: mq.width * .04,
+                ),
+
+              // edit
+              if (widget.message.type == Type.text && isMe)
+                _OptionItem(
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.teal,
+                    size: 26,
+                  ),
+                  name: 'Edit Message',
+                  onTap: () {},
+                ),
+
+              // del msg
+              if (isMe)
+                widget.message.type == Type.text
+                    ? _OptionItem(
+                        icon: const Icon(
+                          Icons.delete_forever,
+                          color: Colors.teal,
+                          size: 26,
+                        ),
+                        name: 'Delete Message',
+                        onTap: () {},
+                      )
+                    : _OptionItem(
+                        icon: const Icon(
+                          Icons.delete_forever,
+                          color: Colors.teal,
+                          size: 26,
+                        ),
+                        name: 'Delete Image',
+                        onTap: () {},
+                      ),
+
+              Divider(
+                endIndent: mq.width * .04,
+                indent: mq.width * .04,
+              ),
+
+              // sent time
+              _OptionItem(
+                icon: const Icon(
+                  Icons.send,
+                  color: Colors.teal,
+                  size: 26,
+                ),
+                name: 'Sent At: ',
+                onTap: () {},
+              ),
+
+              // read time
+              _OptionItem(
+                icon: const Icon(
+                  Icons.remove_red_eye,
+                  color: Colors.teal,
+                  size: 26,
+                ),
+                name: 'Read At: ',
+                onTap: () {},
+              ),
+            ],
+          );
+        });
+  }
+}
+
+class _OptionItem extends StatelessWidget {
+  final Icon icon;
+  final String name;
+  final VoidCallback onTap;
+
+  const _OptionItem(
+      {required this.icon, required this.name, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onTap,
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: mq.width * .05,
+            top: mq.height * .015,
+            bottom: mq.height * .015),
+        child: Row(
+          children: [
+            icon,
+            Flexible(
+                child: Text(
+              '   $name',
+              style: const TextStyle(
+                  fontSize: 15, color: Colors.black, letterSpacing: 0.5),
+            ))
+          ],
+        ),
+      ),
     );
   }
 }
