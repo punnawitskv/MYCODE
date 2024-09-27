@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // body
             body: StreamBuilder(
-                stream: APIs.getMyUserId(),
+                stream: APIs.getMyFriendId(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     // loading
@@ -166,8 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             // loading
                             case ConnectionState.waiting:
                             case ConnectionState.none:
-                              // return const Center(
-                              //     child: CircularProgressIndicator());
+                            // return const Center(
+                            //     child: CircularProgressIndicator());
 
                             // loaded
                             case ConnectionState.active:
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               } else {
                                 return const Center(
                                   child: Text(
-                                    'No Connections Found!',
+                                    "Let's Add Friends!",
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 );
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.teal,
                     size: 28,
                   ),
-                  Text('  Add User')
+                  Text('  Add Friend')
                 ],
               ),
 
@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 maxLines: null,
                 onChanged: (value) => email = value,
                 decoration: const InputDecoration(
-                    hintText: 'Email Id',
+                    hintText: 'Email',
                     prefixIcon: Icon(
                       Icons.email,
                       color: Colors.teal,

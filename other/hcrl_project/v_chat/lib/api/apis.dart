@@ -53,7 +53,7 @@ class APIs {
       firestore
           .collection('users')
           .doc(user.uid)
-          .collection('my_users')
+          .collection('my_friends')
           .doc(data.docs.first.id)
           .set({});
 
@@ -101,11 +101,11 @@ class APIs {
         .set(chatUser.toJson());
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUserId() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyFriendId() {
     return firestore
         .collection('users')
         .doc(user.uid)
-        .collection('my_users')
+        .collection('my_friends')
         .snapshots();
   }
 
@@ -126,7 +126,7 @@ class APIs {
     await firestore
         .collection('users')
         .doc(chatUser.id)
-        .collection('my_users')
+        .collection('my_friends')
         .doc(user.uid)
         .set({}).then((value) => sendMessage(chatUser, msg, type));
   }
