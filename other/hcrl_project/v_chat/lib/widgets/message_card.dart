@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 import 'package:v_chat/api/apis.dart';
 import 'package:v_chat/helper/dialogs.dart';
 import 'package:v_chat/helper/my_date_util.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/message.dart';
+import 'package:http/http.dart' as http;
 
 class MessageCard extends StatefulWidget {
   const MessageCard({super.key, required this.message});
@@ -221,24 +225,58 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: 'Save Image',
-                      onTap: () {},
-                      // onTap: () async {
-                      //   try {
-                      //     log('Image Url: ${widget.message.msg}');
-                      //     await GallerySaver.saveImage(widget.message.msg,
-                      //             albumName: 'We Chat')
-                      //         .then((success) {
-                      //       //for hiding bottom sheet
-                      //       Navigator.pop(context);
-                      //       if (success != null && success) {
-                      //         Dialogs.showSnackbar(
-                      //             context, 'Image Successfully Saved!');
-                      //       }
-                      //     });
-                      //   } catch (e) {
-                      //     log('ErrorWhileSavingImg: $e');
-                      //   }
-                      // },
+                      // onTap: () {},
+                      onTap: () async {
+                        try {
+                          log('Image Url: ${widget.message.msg}');
+
+                          // Download image as Uint8List
+                          final response =
+                              await http.get(Uri.parse(widget.message.msg));
+
+                          if (response.statusCode == 200) {
+                            final Uint8List imageData = response.bodyBytes;
+
+                            final success = await SaverGallery.saveImage(
+                              imageData,
+                              name: 'V Chat',
+                              androidExistNotSave: false,
+                            );
+
+                            //for hiding bottom sheet
+                            // ignore: use_build_context_synchronously
+                            Navigator.pop(context);
+
+                            if (success.isSuccess) {
+                              Dialogs.showSnackbar(
+                                // ignore: use_build_context_synchronously
+                                context,
+                                'Image Successfully Saved!',
+                              );
+                            } else {
+                              Dialogs.showSnackbar(
+                                // ignore: use_build_context_synchronously
+                                context,
+                                'Failed to Save Image!',
+                              );
+                            }
+                          } else {
+                            log('Failed to download image: ${response.statusCode}');
+                            Dialogs.showSnackbar(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              'Failed to download image.',
+                            );
+                          }
+                        } catch (e) {
+                          log('ErrorWhileSavingImg: $e');
+                          Dialogs.showSnackbar(
+                            // ignore: use_build_context_synchronously
+                            context,
+                            'Error occurred while saving image.',
+                          );
+                        }
+                      },
                     ),
 
               if (isMe)
@@ -278,6 +316,7 @@ class _MessageCardState extends State<MessageCard> {
                           await APIs.deleteMessage(widget.message)
                               .then((value) {
                             //for hiding bottom sheet
+                            // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                           });
                         },
@@ -293,6 +332,7 @@ class _MessageCardState extends State<MessageCard> {
                           await APIs.deleteMessage(widget.message)
                               .then((value) {
                             //for hiding bottom sheet
+                            // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                           });
                         },
