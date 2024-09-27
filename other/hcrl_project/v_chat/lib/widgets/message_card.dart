@@ -390,7 +390,7 @@ class _MessageCardState extends State<MessageCard> {
                 children: [
                   Icon(
                     Icons.message,
-                    color: Colors.blue,
+                    color: Colors.teal,
                     size: 28,
                   ),
                   Text(' Update Message')
@@ -417,7 +417,7 @@ class _MessageCardState extends State<MessageCard> {
                     },
                     child: const Text(
                       'Cancel',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      style: TextStyle(color: Colors.teal, fontSize: 16),
                     )),
 
                 //update button
@@ -429,7 +429,7 @@ class _MessageCardState extends State<MessageCard> {
                     },
                     child: const Text(
                       'Update',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      style: TextStyle(color: Colors.teal, fontSize: 16),
                     ))
               ],
             ));

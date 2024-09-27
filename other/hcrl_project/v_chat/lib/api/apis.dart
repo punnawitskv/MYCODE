@@ -31,20 +31,38 @@ class APIs {
         log('Push Token: $t');
       }
     });
-
-    // for handling foreground messages
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   log('Got a message whilst in the foreground!');
-    //   log('Message data: ${message.data}');
-
-    //   if (message.notification != null) {
-    //     log('Message also contained a notification: ${message.notification}');
-    //   }
-    // });
   }
 
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
+  }
+
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    log('data: ${data.docs}');
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      //user exists
+
+      log('user exists: ${data.docs.first.data()}');
+
+      firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id)
+          .set({});
+
+      return true;
+    } else {
+      //user doesn't exists
+
+      return false;
+    }
   }
 
   static Future<void> getSelfInfo() async {
