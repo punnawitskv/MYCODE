@@ -7,6 +7,7 @@ import 'package:v_chat/main.dart';
 import 'package:v_chat/models/chat_user.dart';
 import 'package:v_chat/models/message.dart';
 import 'package:v_chat/screens/chat_screen.dart';
+import 'package:v_chat/widgets/dialogs/profile_dialog.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -44,22 +45,33 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
               return ListTile(
                   //user proflie pic
-                  // leading: const CircleAvatar(
-                  //   child: Icon(CupertinoIcons.person),
-                  // ),
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height * .3),
-                    child: CachedNetworkImage(
-                      width: mq.height * .055,
-                      height: mq.height * .055,
-                      imageUrl: widget.user.image,
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
+                  leading: InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => ProfileDialog(
+                                user: widget.user,
+                              ));
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(mq.height * .3),
+                      child: CachedNetworkImage(
+                        width: mq.height * .055,
+                        height: mq.height * .055,
+                        imageUrl: widget.user.image,
+                        errorWidget: (context, url, error) =>
+                            const CircleAvatar(
+                                child: Icon(CupertinoIcons.person)),
+                      ),
                     ),
                   ),
 
-                  //user name
-                  title: Text(widget.user.name),
+                  // user name
+                  title: Text(
+                    widget.user.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
 
                   //last message
                   subtitle: Text(
