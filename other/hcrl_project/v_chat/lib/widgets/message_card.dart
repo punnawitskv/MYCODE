@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:v_chat/api/apis.dart';
+import 'package:v_chat/helper/dialogs.dart';
 import 'package:v_chat/helper/my_date_util.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/message.dart';
@@ -197,7 +199,18 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: 'Copy Text',
-                      onTap: () {},
+                      onTap: () async {
+                        await Clipboard.setData(
+                                ClipboardData(text: widget.message.msg))
+                            .then((value) {
+                          //for hiding bottom sheet
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context);
+
+                          // ignore: use_build_context_synchronously
+                          Dialogs.showSnackbar(context, 'Text Copied!');
+                        });
+                      },
                     )
                   :
                   // save img
@@ -209,6 +222,23 @@ class _MessageCardState extends State<MessageCard> {
                       ),
                       name: 'Save Image',
                       onTap: () {},
+                      // onTap: () async {
+                      //   try {
+                      //     log('Image Url: ${widget.message.msg}');
+                      //     await GallerySaver.saveImage(widget.message.msg,
+                      //             albumName: 'We Chat')
+                      //         .then((success) {
+                      //       //for hiding bottom sheet
+                      //       Navigator.pop(context);
+                      //       if (success != null && success) {
+                      //         Dialogs.showSnackbar(
+                      //             context, 'Image Successfully Saved!');
+                      //       }
+                      //     });
+                      //   } catch (e) {
+                      //     log('ErrorWhileSavingImg: $e');
+                      //   }
+                      // },
                     ),
 
               if (isMe)
@@ -226,7 +256,12 @@ class _MessageCardState extends State<MessageCard> {
                     size: 26,
                   ),
                   name: 'Edit Message',
-                  onTap: () {},
+                  onTap: () {
+                    //for hiding bottom sheet
+                    Navigator.pop(context);
+
+                    _showMessageUpdateDialog();
+                  },
                 ),
 
               // del msg
@@ -239,7 +274,13 @@ class _MessageCardState extends State<MessageCard> {
                           size: 26,
                         ),
                         name: 'Delete Message',
-                        onTap: () {},
+                        onTap: () async {
+                          await APIs.deleteMessage(widget.message)
+                              .then((value) {
+                            //for hiding bottom sheet
+                            Navigator.pop(context);
+                          });
+                        },
                       )
                     : _OptionItem(
                         icon: const Icon(
@@ -248,7 +289,13 @@ class _MessageCardState extends State<MessageCard> {
                           size: 26,
                         ),
                         name: 'Delete Image',
-                        onTap: () {},
+                        onTap: () async {
+                          await APIs.deleteMessage(widget.message)
+                              .then((value) {
+                            //for hiding bottom sheet
+                            Navigator.pop(context);
+                          });
+                        },
                       ),
 
               Divider(
@@ -263,7 +310,8 @@ class _MessageCardState extends State<MessageCard> {
                   color: Colors.teal,
                   size: 26,
                 ),
-                name: 'Sent At: ',
+                name:
+                    'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                 onTap: () {},
               ),
 
@@ -274,12 +322,77 @@ class _MessageCardState extends State<MessageCard> {
                   color: Colors.teal,
                   size: 26,
                 ),
-                name: 'Read At: ',
+                name: widget.message.read.isEmpty
+                    ? 'Read At: Not seen yet'
+                    : 'Read At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.read)}',
                 onTap: () {},
               ),
             ],
           );
         });
+  }
+
+  //dialog for updating message content
+  void _showMessageUpdateDialog() {
+    String updatedMsg = widget.message.msg;
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
+
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+
+              //title
+              title: const Row(
+                children: [
+                  Icon(
+                    Icons.message,
+                    color: Colors.blue,
+                    size: 28,
+                  ),
+                  Text(' Update Message')
+                ],
+              ),
+
+              //content
+              content: TextFormField(
+                initialValue: updatedMsg,
+                maxLines: null,
+                onChanged: (value) => updatedMsg = value,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+              ),
+
+              //actions
+              actions: [
+                //cancel button
+                MaterialButton(
+                    onPressed: () {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    )),
+
+                //update button
+                MaterialButton(
+                    onPressed: () {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                      APIs.updateMessage(widget.message, updatedMsg);
+                    },
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ))
+              ],
+            ));
   }
 }
 
@@ -288,27 +401,35 @@ class _OptionItem extends StatelessWidget {
   final String name;
   final VoidCallback onTap;
 
-  const _OptionItem(
-      {required this.icon, required this.name, required this.onTap});
+  const _OptionItem({
+    required this.icon,
+    required this.name,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap,
+      onTap: onTap,
       child: Padding(
         padding: EdgeInsets.only(
-            left: mq.width * .05,
-            top: mq.height * .015,
-            bottom: mq.height * .015),
+          left: mq.width * .05,
+          top: mq.height * .015,
+          bottom: mq.height * .015,
+        ),
         child: Row(
           children: [
             icon,
             Flexible(
-                child: Text(
-              '   $name',
-              style: const TextStyle(
-                  fontSize: 15, color: Colors.black, letterSpacing: 0.5),
-            ))
+              child: Text(
+                '   $name',
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
           ],
         ),
       ),
