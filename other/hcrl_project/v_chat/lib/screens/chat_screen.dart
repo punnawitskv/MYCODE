@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:v_chat/api/apis.dart';
+import 'package:v_chat/helper/my_date_util.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/chat_user.dart';
 import 'package:v_chat/models/message.dart';
@@ -132,62 +133,79 @@ class _ChatScreenState extends State<ChatScreen> {
   // app bar widget
   Widget _appBar() {
     return InkWell(
-      onTap: () {},
-      child: Row(
-        children: [
-          // back btn
-          IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              )),
+        onTap: () {},
+        child: StreamBuilder(
+            stream: APIs.getUserInfo(widget.user),
+            builder: (context, snapshot) {
+              final data = snapshot.data?.docs;
+              final list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
 
-          // user profile
-          ClipRRect(
-            borderRadius: BorderRadius.circular(mq.height * .3),
-            child: CachedNetworkImage(
-              width: mq.height * .05,
-              height: mq.height * .05,
-              imageUrl: widget.user.image,
-              errorWidget: (context, url, error) =>
-                  const CircleAvatar(child: Icon(CupertinoIcons.person)),
-            ),
-          ),
+              return Row(
+                children: [
+                  // back btn
+                  IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      )),
 
-          // some space
-          const SizedBox(width: 10),
+                  // user profile
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .3),
+                    child: CachedNetworkImage(
+                      width: mq.height * .05,
+                      height: mq.height * .05,
+                      imageUrl:
+                          list.isNotEmpty ? list[0].image : widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                    ),
+                  ),
 
-          // username
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.user.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
+                  // some space
+                  const SizedBox(width: 10),
 
-              // some space
-              const SizedBox(height: 2),
+                  // username and last seen time
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // user name
+                      Text(
+                        list.isNotEmpty ? list[0].name : widget.user.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
 
-              // last seen
-              const Text(
-                'Last seen not available',
-                style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+                      // some space
+                      const SizedBox(height: 2),
+
+                      // last seen
+                      Text(
+                        list.isNotEmpty
+                            ? list[0].isOnline
+                                ? 'Online'
+                                : MyDateUtil.getLastActiveTime(
+                                    context: context,
+                                    lastActive: list[0].lastActive)
+                            : MyDateUtil.getLastActiveTime(
+                                context: context,
+                                lastActive: widget.user.lastActive),
+                        style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      )
+                    ],
+                  )
+                ],
+              );
+            }));
   }
 
   // bottom chat input field
