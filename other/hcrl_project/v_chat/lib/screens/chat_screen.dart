@@ -11,6 +11,7 @@ import 'package:v_chat/helper/my_date_util.dart';
 import 'package:v_chat/main.dart';
 import 'package:v_chat/models/chat_user.dart';
 import 'package:v_chat/models/message.dart';
+import 'package:v_chat/screens/view_profile_screen.dart';
 import 'package:v_chat/widgets/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -133,7 +134,12 @@ class _ChatScreenState extends State<ChatScreen> {
   // app bar widget
   Widget _appBar() {
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => ViewProfileScreen(user: widget.user)));
+        },
         child: StreamBuilder(
             stream: APIs.getUserInfo(widget.user),
             builder: (context, snapshot) {
