@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:v_chat/models/chat_user.dart';
 import 'package:v_chat/models/message.dart';
@@ -18,6 +19,30 @@ class APIs {
 
   static User get user => auth.currentUser!;
 
+  static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+
+  // for getting firebase messaging token
+  static Future<void> getFirebaseMessagingToken() async {
+    await fMessaging.requestPermission();
+
+    await fMessaging.getToken().then((t) {
+      if (t != null) {
+        me.pushToken = t;
+        log('Push Token: $t');
+      }
+    });
+
+    // for handling foreground messages
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   log('Got a message whilst in the foreground!');
+    //   log('Message data: ${message.data}');
+
+    //   if (message.notification != null) {
+    //     log('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
+  }
+
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
@@ -26,6 +51,11 @@ class APIs {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
+        await getFirebaseMessagingToken();
+
+        // set user status atv
+        APIs.updateActiveStatus(true);
+
         log('My Data: ${user.data()}');
       } else {
         await createUser().then((value) => getSelfInfo());

@@ -28,9 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     APIs.getSelfInfo();
 
-    // set user status atv
-    APIs.updateActiveStatus(true);
-
     SystemChannels.lifecycle.setMessageHandler((message) {
       log('Message: $message');
 

@@ -14,21 +14,20 @@ class ProfileDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.white.withOpacity(.9),
+      backgroundColor: Colors.white.withOpacity(.6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: SizedBox(
         width: mq.width * .6,
-        height: mq.height * .45,
+        height: mq.height * .4,
         child: Stack(
           children: [
             // user profile pic
-            Positioned(
-              top: mq.height * .1,
-              left: mq.width * .14,
+            Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(mq.height * .25),
                 child: CachedNetworkImage(
                   width: mq.width * .5,
+                  height: mq.width * .5,
                   fit: BoxFit.cover,
                   imageUrl: user.image,
                   errorWidget: (context, url, error) =>
@@ -43,6 +42,8 @@ class ProfileDialog extends StatelessWidget {
               width: mq.width * .55,
               child: Text(
                 user.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
