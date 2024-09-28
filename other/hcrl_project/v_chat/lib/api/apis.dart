@@ -109,16 +109,21 @@ class APIs {
         .snapshots();
   }
 
-  // get all users from database
+// get all users from database
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
     log('\nUserIds: $userIds');
 
-    return firestore
-        .collection('users')
-        .where('id', whereIn: userIds)
-        // .where('id', isNotEqualTo: user.uid)
-        .snapshots();
+    // ตรวจสอบว่า userIds ว่างหรือไม่
+    if (userIds.isNotEmpty) {
+      return firestore
+          .collection('users')
+          .where('id', whereIn: userIds)
+          .snapshots();
+    } else {
+      // ถ้า userIds ว่าง, คืนค่ากลับเป็น stream ว่างๆ เพื่อไม่ให้เกิดข้อผิดพลาด
+      return Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
+    }
   }
 
   static Future<void> sendFirstMessage(
