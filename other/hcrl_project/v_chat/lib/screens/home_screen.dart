@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 backgroundColor: Colors.teal,
                 child: const Icon(
-                  Icons.add_comment_rounded,
+                  Icons.person_add,
                   color: Colors.white,
                 ),
               ),
