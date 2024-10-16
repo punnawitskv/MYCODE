@@ -1,10 +1,12 @@
 import time
 import sys
 
+
 class Guest:
     def __init__(self, room_num, vehicle=None):
         self.room_num = room_num
         self.vehicle = vehicle
+
 
 class Hotel:
     def __init__(self):
@@ -132,3 +134,4 @@ while True:
             hotel.search_room(room_number)
         except ValueError:
             print("Invalid room number. Please enter a valid number.")
+
