@@ -103,14 +103,11 @@ class Hotel:
         start_time = time.time()  
         found_guest = next((guest for guest in self.guests if guest.room_num == room_number), None)
         if found_guest:
-            print("The room is already occupied")
+           print("The room is already occupied")
         else:
             guest = Guest(room_number,["manual"])
             self.guests.append(guest)
-        
-
         print(f"Time taken for 'search_room': {time.time() - start_time:.15f} seconds")
-        
 
     def make_file(self, filename='hotel_guests.txt'):
         print("making file")
@@ -128,16 +125,12 @@ class Hotel:
         except Exception as e:
             print(f"An error occurred while writing to the file: {e}")
 
-
 hotel = Hotel()
 count = 0
 total_old_guests = 0
 while True:
     action = input("\nType 'reset', 'add', 'add_manual', 'remove_manual', 'vacant', 'search', 'memory', or 'stop': ").lower()
     
-    if action == 'm':
-        hotel.make_file()
-
     if action == 'stop':
         break
     
@@ -147,6 +140,7 @@ while True:
             num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship = map(int, inp.split(','))
             hotel.add_guest(num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship, count, total_old_guests)
             hotel.show_all_guests()
+            hotel.make_file()
             count += 1  # Increment count after each successful input
         except ValueError:
             print("Invalid input format. Please enter numbers separated by commas.")
@@ -165,6 +159,7 @@ while True:
             hotel.reset(old_number_guests)  
             hotel.show_all_guests()
             total_old_guests = old_number_guests
+            count = 0
         except ValueError:
             print("Please enter a valid number.")
 
