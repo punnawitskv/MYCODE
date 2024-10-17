@@ -10,29 +10,37 @@ class Hotel:
     def __init__(self):
         self.guests = []
 
-    def add_guest(self, num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship, count, total_old_guests):
+    def add_guest(self,num_old_guests, num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship):
+        self.guests = []
         start_time = time.time()  
-        total_guests = num_guests_per_car * num_cars_per_ship * num_ships_per_army * num_armies_per_spaceship
+        total_guests = num_old_guests + num_guests_per_car * num_cars_per_ship * num_ships_per_army * num_armies_per_spaceship
 
         if total_guests <= 0:
             print("Total guests must be greater than zero.")
             return
 
         for i in range(total_guests):
+            old_guess_no = i
             guess_no = i % num_guests_per_car
             car_no = (i // num_guests_per_car) % num_cars_per_ship
             ship_no = (i // (num_guests_per_car * num_cars_per_ship)) % num_ships_per_army
             army_no = (i // (num_guests_per_car * num_cars_per_ship * num_ships_per_army)) % num_armies_per_spaceship
             
-            room_num = (2 ** guess_no) * (3 ** car_no) * (5 ** ship_no) * (7 ** army_no)  * (11 ** count)+ total_old_guests
-            vehicle = [total_old_guests+i+1, guess_no + 1, car_no + 1, ship_no + 1, army_no + 1]
+            if i >= num_old_guests :
+                room_num = (2 **guess_no) * (3 **  car_no) * (5 ** ship_no) * (7 **  army_no)  * (11 ** 1)
+                vehicle = [0, guess_no + 1, car_no + 1, ship_no + 1, army_no + 1]
+            
+            else : 
+                room_num = (2 ** old_guess_no) * (11 ** 0)
+                vehicle = [1, 0, 0, 0, i + 1]
+
             new_guest = Guest(room_num, vehicle)
             self.guests.append(new_guest)
 
         print(f"Time taken for 'search_room': {(time.time() - start_time) * 1000:.15f} ms")
 
     def show_all_guests(self):
-        start_time = time.time()  # Start time tracking
+        start_time = time.time()  
         if not self.guests:
             print("No guests in the hotel.")
             return
@@ -41,12 +49,12 @@ class Hotel:
         sorted_guests = sorted(self.guests, key=lambda g: g.room_num)
         for guest in sorted_guests:
             vehicle_str = ", ".join(map(str, guest.vehicle)) if guest.vehicle else "No vehicles"
-            print(f"Room {guest.room_num}: Vehicles: [{vehicle_str}]")
+            print(f"Room\t: {guest.room_num}\tVehicles\t: [{vehicle_str}]")
 
         print(f"Time taken for 'show_all_guests': {time.time() - start_time:.15f} seconds")
 
     def remove_guest(self, room_number):
-        start_time = time.time()  # Start time tracking
+        start_time = time.time()  
         found_guest = next((guest for guest in self.guests if guest.room_num == room_number), None)
 
         if found_guest:
@@ -58,7 +66,7 @@ class Hotel:
         print(f"Time taken for 'remove_guest': {time.time() - start_time:.15f} seconds")
 
     def show_vacant_rooms(self):
-        start_time = time.time()  # Start time tracking
+        start_time = time.time() 
         if not self.guests:
             print("No occupied rooms, all rooms are vacant.")
             return
@@ -91,19 +99,11 @@ class Hotel:
 
         print(f"Time taken for 'search_room': {time.time() - start_time:.15f} seconds")
 
-    def reset(self, old_number_guests):
-        self.guests = []
-        for i in range(1, old_number_guests+1):
-            room_num = i 
-            vehicle = [i,0,0,0,0]
-            new_guest = Guest(room_num, vehicle)
-            self.guests.append(new_guest)
-
     def add_manual(self, room_number):
         start_time = time.time()  
         found_guest = next((guest for guest in self.guests if guest.room_num == room_number), None)
         if found_guest:
-           print("The room is already occupied")
+            print("The room is already occupied")
         else:
             guest = Guest(room_number,["manual"])
             self.guests.append(guest)
@@ -126,26 +126,27 @@ class Hotel:
             print(f"An error occurred while writing to the file: {e}")
 
 hotel = Hotel()
-count = 0
-total_old_guests = 0
 while True:
-    action = input("\nType 'reset', 'add', 'add_manual', 'remove_manual', 'vacant', 'search', 'memory', or 'stop': ").lower()
+    action = input("\nType\n'add : a'\t'add_manual : am'\t'remove_manual : rm'\t'vacant : v'\n'search : s'\t'make_file : mf'\t'memory : m'\t\t'stop : st'\n: ").lower()
     
-    if action == 'stop':
+    if action == 'stop' or action == 'st':
         break
+
+    if action == 'make_file' or action == 'mf':
+        hotel.make_file()
     
-    if action == 'add':
-        inp = input("Input (format: num_guests_per_car,num_cars_per_ship,num_ships_per_army,num_armies_per_spaceship): ")
+    if action == 'add' or action == 'a':
+        
+        inp = input("Input (format : num_old_guest, num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship)\n: ")
         try:
-            num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship = map(int, inp.split(','))
-            hotel.add_guest(num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship, count, total_old_guests)
+            num_old_guest,num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship = map(int, inp.split(','))
+            hotel.add_guest(num_old_guest,num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship)
             hotel.show_all_guests()
-            hotel.make_file()
-            count += 1  # Increment count after each successful input
+        
         except ValueError:
             print("Invalid input format. Please enter numbers separated by commas.")
     
-    elif action == 'remove_manual':
+    elif action == 'remove_manual' or action == 'rm':
         try:
             room_number = int(input("Enter the room number to remove the guest: "))
             hotel.remove_guest(room_number)
@@ -153,17 +154,7 @@ while True:
         except ValueError:
             print("Invalid room number. Please enter a valid number.")
 
-    elif action == 'reset':  
-        try:
-            old_number_guests = int(input("Enter the original number of guests: "))
-            hotel.reset(old_number_guests)  
-            hotel.show_all_guests()
-            total_old_guests = old_number_guests
-            count = 0
-        except ValueError:
-            print("Please enter a valid number.")
-
-    elif action == 'add_manual':  
+    elif action == 'add_manual' or action == 'am':  
         try:
             room_number = int(input("Enter the room number you wish to stay in: "))
             hotel.add_manual(room_number) 
@@ -171,14 +162,13 @@ while True:
         except ValueError:
             print("Invalid room number. Please enter a valid number.")
         
-
-    elif action == 'vacant':
+    elif action == 'vacant' or action == 'v':
         hotel.show_vacant_rooms()
 
-    elif action == 'memory':
+    elif action == 'memory' or action == 'm':
         hotel.show_memory_usage()
 
-    elif action == 'search':
+    elif action == 'search' or action == 's':
         try:
             room_number = int(input("Enter the room number to search for: "))
             hotel.search_room(room_number)

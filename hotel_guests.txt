@@ -1,3 +1,0 @@
-Current guests in the hotel (sorted by room number):
-Room 1: Vehicles: [1, 1, 1, 1, 1]
-Room 3: Vehicles: [2, 1, 2, 1, 1]
