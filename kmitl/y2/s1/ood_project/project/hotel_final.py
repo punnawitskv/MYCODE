@@ -166,7 +166,6 @@ class Hotel:
         except Exception as e:
             print(f"An error occurred while writing to the file: {e}")
 
-
 hotel = Hotel()
 while True:
     action = input("\nType\n'add : a'\t'add_manual : am'\t'remove_manual : rm'\t'vacant : v'\n'search : s'\t'make_file : mf'\t'memory : m'\t\t'stop : st'\n: ").lower()
@@ -174,11 +173,10 @@ while True:
     if action == 'stop' or action == 'st':
         break
 
-    if action == 'make_file' or action == 'mf':
+    elif action == 'make_file' or action == 'mf':
         hotel.make_file()
 
-    if action == 'add' or action == 'a':
-
+    elif action == 'add' or action == 'a':
         inp = input(
             "Input (format : old_guests, guests_per_car, cars_per_ship, ships_per_army, armies_per_spaceship)\n: ")
         try:
@@ -189,7 +187,7 @@ while True:
             hotel.show_all_guests()
 
         except ValueError:
-            print("Invalid input format. Please enter numbers separated by commas.")
+            print("Invalid input format. Please enter numbers separated by spaces.")
 
     elif action == 'remove_manual' or action == 'rm':
         try:
@@ -222,4 +220,5 @@ while True:
         except ValueError:
             print("Invalid room number. Please enter a valid number.")
 
-    else : print("Invalid action. Please enter a valid command.")
+    else:
+        print("Invalid action. Please enter a valid command.")
