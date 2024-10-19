@@ -152,7 +152,7 @@ while True:
         hotel.make_file()
 
     elif action == 'add' or action == 'a':
-        inp = input("Input (format : old_guests, guests_per_car, cars_per_ship, ships_per_army, armies_per_spaceship)\n: ")
+        inp = input("Input (format : old_guests guests_per_car cars_per_ship ships_per_army armies_per_spaceship)\n: ")
         try:
             num_old_guest, num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship = map(int, inp.split(' '))
             hotel.add_guest(num_old_guest, num_guests_per_car, num_cars_per_ship, num_ships_per_army, num_armies_per_spaceship)
