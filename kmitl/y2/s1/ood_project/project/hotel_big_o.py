@@ -88,7 +88,7 @@ class Hotel:
     def show_vacant_rooms(self):
         start_time = time.time()
         if not self.guests:
-            print("No occupied rooms!!!, all rooms are vacant.")
+            print("No occupied rooms!!! all rooms are vacant.")
             return
 
         max_room_number = max(self.guests.keys())
@@ -159,7 +159,7 @@ while True:
             hotel.show_all_guests()
 
         except ValueError:
-            print("Invalid input format!!!. Please enter numbers separated by spaces.")
+            print("Invalid input format!!! Please enter numbers separated by spaces.")
 
     elif action == 'remove_manual' or action == 'rm':
         try:
@@ -167,7 +167,7 @@ while True:
             hotel.remove_guest(room_number)
             hotel.show_all_guests()
         except ValueError:
-            print("Invalid room number!!!. Please enter a valid number.")
+            print("Invalid room number!!! Please enter a valid number.")
 
     elif action == 'add_manual' or action == 'am':
         try:
@@ -175,7 +175,7 @@ while True:
             hotel.add_manual(room_number)
             hotel.show_all_guests()
         except ValueError:
-            print("Invalid room number!!!. Please enter a valid number.")
+            print("Invalid room number!!! Please enter a valid number.")
 
     elif action == 'vacant' or action == 'v':
         hotel.show_vacant_rooms()
@@ -188,7 +188,7 @@ while True:
             room_number = int(input("Enter the room number to search for: "))
             hotel.search_room(room_number)
         except ValueError:
-            print("Invalid room number!!!. Please enter a valid number.")
+            print("Invalid room number!!! Please enter a valid number.")
 
     else:
-        print("Invalid action!!!. Please enter a valid command.")
+        print("Invalid action!!! Please enter a valid command.")
