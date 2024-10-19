@@ -64,7 +64,7 @@ class Hotel:
     def show_all_guests(self):
         start_time = time.time()
         if not self.guests:
-            print("No guests in the hotel.")
+            print("No guests in the hotel!!!")
             return
         
         print("Current guests in the hotel (sorted by room number):")
@@ -81,14 +81,14 @@ class Hotel:
             del self.guests[room_number]
             print(f"Guest in room {room_number} removed.")
         else:
-            print(f"No guest found in room {room_number}.")
+            print(f"No guest found in room {room_number}!!!")
 
         print(f"Time taken for 'remove_guest': {time.time() - start_time:.15f} seconds")
 
     def show_vacant_rooms(self):
         start_time = time.time()
         if not self.guests:
-            print("No occupied rooms, all rooms are vacant.")
+            print("No occupied rooms!!!, all rooms are vacant.")
             return
 
         max_room_number = max(self.guests.keys())
@@ -98,7 +98,7 @@ class Hotel:
         if vacant_rooms:
             print("Vacant rooms:", vacant_rooms)
         else:
-            print("No vacant rooms up to room", max_room_number)
+            print("No vacant rooms up to room !!!", max_room_number)
 
         print(f"Time taken for 'show_vacant_rooms': {time.time() - start_time:.15f} seconds")
 
@@ -113,14 +113,14 @@ class Hotel:
             vehicle_str = ", ".join(map(str, self.guests[room_number]))
             print(f"Guest in room {room_number}: Vehicles: [{vehicle_str}]")
         else:
-            print(f"No guest found in room {room_number}.")
+            print(f"No guest found in room {room_number}!!!")
 
         print(f"Time taken for 'search_room': {time.time() - start_time:.15f} seconds")
 
     def add_manual(self, room_number):
         start_time = time.time()
         if room_number in self.guests:
-            print("The room is already occupied")
+            print("The room is already occupied!!!")
         else:
             self.guests[room_number] = ["manual"]  
         print(f"Time taken for 'add_manual': {time.time() - start_time:.15f} seconds")
@@ -159,7 +159,7 @@ while True:
             hotel.show_all_guests()
 
         except ValueError:
-            print("Invalid input format. Please enter numbers separated by spaces.")
+            print("Invalid input format!!!. Please enter numbers separated by spaces.")
 
     elif action == 'remove_manual' or action == 'rm':
         try:
@@ -167,7 +167,7 @@ while True:
             hotel.remove_guest(room_number)
             hotel.show_all_guests()
         except ValueError:
-            print("Invalid room number. Please enter a valid number.")
+            print("Invalid room number!!!. Please enter a valid number.")
 
     elif action == 'add_manual' or action == 'am':
         try:
@@ -175,7 +175,7 @@ while True:
             hotel.add_manual(room_number)
             hotel.show_all_guests()
         except ValueError:
-            print("Invalid room number. Please enter a valid number.")
+            print("Invalid room number!!!. Please enter a valid number.")
 
     elif action == 'vacant' or action == 'v':
         hotel.show_vacant_rooms()
@@ -188,7 +188,7 @@ while True:
             room_number = int(input("Enter the room number to search for: "))
             hotel.search_room(room_number)
         except ValueError:
-            print("Invalid room number. Please enter a valid number.")
+            print("Invalid room number!!!. Please enter a valid number.")
 
     else:
-        print("Invalid action. Please enter a valid command.")
+        print("Invalid action!!!. Please enter a valid command.")
