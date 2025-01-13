@@ -25,28 +25,42 @@
                 dateTimeDisplay.style.position = "fixed";
                 dateTimeDisplay.style.top = "0px";
                 dateTimeDisplay.style.right = "0px";
-                dateTimeDisplay.style.padding = "5px"
+                dateTimeDisplay.style.padding = "5px";
                 dateTimeDisplay.style.fontSize = "14px";
                 dateTimeDisplay.style.border = "3px solid black";
+                dateTimeDisplay.style.cursor = "default";
                 container.appendChild(dateTimeDisplay);
 
-                worker = new Worker('worker.js');
+                function startWorker() {
+                    worker = new Worker('worker.js');
 
-                worker.onmessage = function (e) {
-                    const { dateTime, color } = e.data;
-                    dateTimeDisplay.textContent = dateTime;
-                    dateTimeDisplay.style.color = color.textColor;
-                    dateTimeDisplay.style.backgroundColor = color.bgColor;
-                };
+                    worker.onmessage = function (e) {
+                        const { dateTime, color } = e.data;
+                        dateTimeDisplay.textContent = dateTime;
+                        dateTimeDisplay.style.color = color.textColor;
+                        dateTimeDisplay.style.backgroundColor = color.bgColor;
+                    };
 
-                worker.postMessage('start');
+                    worker.postMessage('start');
+                }
+
+                startWorker();
 
                 dateTimeDisplay.onclick = function () {
-                    worker.terminate();
-                    dateTimeDisplay.style.position = "absolute";
-                    dateTimeDisplay.style.top = button.offsetTop + "px";
-                    dateTimeDisplay.style.left = button.offsetLeft + "px";
-                    dateTimeDisplay.style.right = null;
+                    if (worker) {
+                        worker.terminate();
+                        worker = null;
+                        dateTimeDisplay.style.position = "absolute";
+                        dateTimeDisplay.style.top = button.offsetTop + "px";
+                        dateTimeDisplay.style.left = button.offsetLeft + "px";
+                        dateTimeDisplay.style.right = null;
+                    } else {
+                        dateTimeDisplay.style.position = "fixed";
+                        dateTimeDisplay.style.top = "0px";
+                        dateTimeDisplay.style.right = "0px";
+                        dateTimeDisplay.style.left = null;
+                        startWorker();
+                    }
                 };
             };
 
@@ -58,9 +72,8 @@
             container.appendChild(personalInfo);
 
             personalInfo.style.paddingTop = "30px"
-            personalInfo.style.paddingBottom = "10px"
 
-            personalLink.style.color = "pink"
+            personalLink.style.color = "violet"
 
             const infoContainer = document.createElement("div");
             container.appendChild(infoContainer);
