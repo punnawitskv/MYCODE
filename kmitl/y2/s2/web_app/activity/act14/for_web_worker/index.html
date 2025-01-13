@@ -27,24 +27,24 @@
             dateTimeDisplay.style.position = "fixed";
             dateTimeDisplay.style.top = "0px";
             dateTimeDisplay.style.right = "0px";
-            dateTimeDisplay.style.padding = "5px";
+            dateTimeDisplay.style.padding = "5px"
             dateTimeDisplay.style.fontSize = "14px";
             dateTimeDisplay.style.border = "3px solid black";
             container.appendChild(dateTimeDisplay);
 
-            // Initialize the Web Worker
-            worker = new Worker("worker.js");
+            worker = new Worker('worker.js');
 
             worker.onmessage = function (e) {
-                const { time, textColor, bgColor } = e.data;
-                dateTimeDisplay.textContent = time;
-                dateTimeDisplay.style.color = textColor;
-                dateTimeDisplay.style.backgroundColor = bgColor;
+                const { dateTime, color } = e.data;
+                dateTimeDisplay.textContent = dateTime;
+                dateTimeDisplay.style.color = color.textColor;
+                dateTimeDisplay.style.backgroundColor = color.bgColor;
             };
 
-            // Handle click event to stop the worker and reposition the display
+            worker.postMessage('start');
+
             dateTimeDisplay.onclick = function () {
-                worker.terminate();  // Stop the worker
+                worker.terminate();
                 dateTimeDisplay.style.position = "absolute";
                 dateTimeDisplay.style.top = button.offsetTop + "px";
                 dateTimeDisplay.style.left = button.offsetLeft + "px";
@@ -52,7 +52,6 @@
             };
         };
 
-        // Additional static content (personal info and snapshots)
         const personalInfo = document.createElement("p");
         const personalLink = document.createElement("a");
         personalLink.textContent = "Personal Info";
@@ -60,8 +59,10 @@
         personalInfo.appendChild(personalLink);
         container.appendChild(personalInfo);
 
-        personalInfo.style.paddingTop = "30px";
-        personalInfo.style.paddingBottom = "10px";
+        personalInfo.style.paddingTop = "30px"
+        personalInfo.style.paddingBottom = "10px"
+
+        personalLink.style.color = "pink"
 
         const infoContainer = document.createElement("div");
         container.appendChild(infoContainer);

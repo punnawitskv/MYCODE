@@ -1,4 +1,4 @@
-// worker.js
+let colorIndex = 0;
 const colorPairs = [
     { textColor: "red", bgColor: "green" },
     { textColor: "purple", bgColor: "yellow" },
@@ -8,29 +8,21 @@ const colorPairs = [
     { textColor: "orange", bgColor: "blue" }
 ];
 
-let colorIndex = 0;
-
-updateDateTime()
-
 function updateDateTime() {
     const now = new Date();
     const currentColorPair = colorPairs[colorIndex];
     colorIndex = (colorIndex + 1) % colorPairs.length;
 
-    return {
-        time: now.toString(),
-        textColor: currentColorPair.textColor,
-        bgColor: currentColorPair.bgColor
-    };
+    postMessage({
+        dateTime: now.toString(),
+        color: currentColorPair
+    });
 }
 
-// Listen for messages from the main thread
-self.onmessage = function () {
-    const dateTime = updateDateTime();
-    postMessage(dateTime);  // Send data back to the main thread
+onmessage = function (e) {
+    if (e.data === 'start') {
+        updateDateTime();
+    }
 };
 
-// Set an interval to send updates every second
-setInterval(() => {
-    self.postMessage(updateDateTime());
-}, 1000);
+setInterval(updateDateTime, 1000);
