@@ -17,7 +17,7 @@
         container.appendChild(button);
 
         let dateTimeDisplay;
-        let dateTimeInterval;
+        let worker;
 
         button.onclick = function () {
             button.style.visibility = "hidden";
@@ -27,41 +27,24 @@
             dateTimeDisplay.style.position = "fixed";
             dateTimeDisplay.style.top = "0px";
             dateTimeDisplay.style.right = "0px";
-            dateTimeDisplay.style.padding = "5px"
+            dateTimeDisplay.style.padding = "5px";
             dateTimeDisplay.style.fontSize = "14px";
             dateTimeDisplay.style.border = "3px solid black";
             container.appendChild(dateTimeDisplay);
 
-            const colorPairs = [
-                { textColor: "red", bgColor: "green" },
-                { textColor: "purple", bgColor: "yellow" },
-                { textColor: "blue", bgColor: "orange" },
-                { textColor: "green", bgColor: "red" },
-                { textColor: "yellow", bgColor: "purple" },
-                { textColor: "orange", bgColor: "blue" }
-            ];
+            // Initialize the Web Worker
+            worker = new Worker("worker.js");
 
-            let colorIndex = 0;
+            worker.onmessage = function (e) {
+                const { time, textColor, bgColor } = e.data;
+                dateTimeDisplay.textContent = time;
+                dateTimeDisplay.style.color = textColor;
+                dateTimeDisplay.style.backgroundColor = bgColor;
+            };
 
-            updateDateTime()
-
-            function updateDateTime() {
-                const now = new Date();
-                dateTimeDisplay.textContent = now.toString();
-
-                const currentColorPair = colorPairs[colorIndex];
-                dateTimeDisplay.style.color = currentColorPair.textColor;
-                dateTimeDisplay.style.backgroundColor = currentColorPair.bgColor;
-
-                colorIndex = (colorIndex + 1) % colorPairs.length;
-
-                dateTimeDisplay.style.cursor = "default";
-            }
-
-            dateTimeInterval = setInterval(updateDateTime, 1000);
-
+            // Handle click event to stop the worker and reposition the display
             dateTimeDisplay.onclick = function () {
-                clearInterval(dateTimeInterval);
+                worker.terminate();  // Stop the worker
                 dateTimeDisplay.style.position = "absolute";
                 dateTimeDisplay.style.top = button.offsetTop + "px";
                 dateTimeDisplay.style.left = button.offsetLeft + "px";
@@ -69,6 +52,7 @@
             };
         };
 
+        // Additional static content (personal info and snapshots)
         const personalInfo = document.createElement("p");
         const personalLink = document.createElement("a");
         personalLink.textContent = "Personal Info";
@@ -76,10 +60,8 @@
         personalInfo.appendChild(personalLink);
         container.appendChild(personalInfo);
 
-        personalInfo.style.paddingTop = "30px"
-        personalInfo.style.paddingBottom = "10px"
-
-        personalLink.style.color = "pink"
+        personalInfo.style.paddingTop = "30px";
+        personalInfo.style.paddingBottom = "10px";
 
         const infoContainer = document.createElement("div");
         container.appendChild(infoContainer);
