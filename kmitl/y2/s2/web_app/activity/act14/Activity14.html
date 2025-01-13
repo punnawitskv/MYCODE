@@ -1,10 +1,180 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
-    <body>
-        <div id="maincontainer"></div>
-        <script>
 
-        </script>
+<head></head>
+
+<body>
+    <div id="maincontainer"></div>
+    <script>
+        // สร้างส่วนหัวของเนื้อหา
+        const container = document.getElementById("maincontainer");
+    
+        const heading = document.createElement("h1");
+        heading.textContent = "Exercise 04: JavaScript&DOM";
+        container.appendChild(heading);
+    
+        // สร้างปุ่มแสดงวันและเวลา
+        const button = document.createElement("button");
+        button.textContent = "Click me to display Date and Time";
+        container.appendChild(button);
+    
+        let dateTimeDisplay;
+        let dateTimeInterval;
+    
+        button.onclick = function () {
+            // ซ่อนปุ่มเมื่อคลิก
+            button.style.visibility = "hidden";
+    
+            // สร้างช่องข้อความที่จะแสดงวันและเวลา
+            dateTimeDisplay = document.createElement("div");
+            dateTimeDisplay.id = "datetime-display";
+            dateTimeDisplay.style.position = "fixed";
+            dateTimeDisplay.style.top = "0px";
+            dateTimeDisplay.style.right = "0px";
+            dateTimeDisplay.style.padding = "5px"
+            dateTimeDisplay.style.fontSize = "14px"; // ตั้งขนาดฟอนต์เป็น 14px
+            dateTimeDisplay.style.border = "3px solid black"; // กรอบสีดำ
+            container.appendChild(dateTimeDisplay);
+    
+            // ลำดับสีที่ต้องการ
+            const colorPairs = [
+                { textColor: "red", bgColor: "green" },
+                { textColor: "purple", bgColor: "yellow" },
+                { textColor: "blue", bgColor: "orange" },
+                { textColor: "green", bgColor: "red" },
+                { textColor: "yellow", bgColor: "purple" },
+                { textColor: "orange", bgColor: "blue" }
+            ];
+    
+            let colorIndex = 0; // เริ่มต้นที่ลำดับแรก
+            
+            updateDateTime()
+    
+            // ฟังก์ชันแสดงวันเวลาและเปลี่ยนสี
+            function updateDateTime() {
+                const now = new Date();
+                dateTimeDisplay.textContent = now.toString(); // แสดงวันเวลาแบบละเอียด
+    
+                // ใช้ลำดับสีที่กำหนด
+                const currentColorPair = colorPairs[colorIndex];
+                dateTimeDisplay.style.color = currentColorPair.textColor; // เปลี่ยนสีข้อความ
+                dateTimeDisplay.style.backgroundColor = currentColorPair.bgColor; // เปลี่ยนสีพื้นหลัง
+    
+                // เปลี่ยนลำดับสีในทุกๆ 1 วินาที
+                colorIndex = (colorIndex + 1) % colorPairs.length;
+
+                dateTimeDisplay.style.cursor = "default";  // เพิ่มบรรทัดนี้
+            }
+    
+            // เรียกใช้ฟังก์ชัน updateDateTime ทุกวินาที
+            dateTimeInterval = setInterval(updateDateTime, 1000);
+    
+            // เพิ่มฟังก์ชันเมื่อคลิกที่วันที่เวลา
+            dateTimeDisplay.onclick = function () {
+                // หยุดการอัปเดตวันเวลา
+                clearInterval(dateTimeInterval);
+    
+                // เปลี่ยนตำแหน่งของวันที่เวลาไปที่ปุ่มที่หายไป
+                dateTimeDisplay.style.position = "absolute";
+                dateTimeDisplay.style.top = button.offsetTop + "px"; // ตำแหน่ง Y ของปุ่ม
+                dateTimeDisplay.style.left = button.offsetLeft + "px"; // ตำแหน่ง X ของปุ่ม
+                dateTimeDisplay.style.right = null;
+            };
+        };
+    
+        // สร้างลิงก์ Personal Info
+        const personalInfo = document.createElement("p");
+        const personalLink = document.createElement("a");
+        personalLink.textContent = "Personal Info";
+        personalLink.href = "#";
+        personalInfo.appendChild(personalLink);
+        container.appendChild(personalInfo);
+    
+        // สร้าง container สำหรับแสดงข้อมูลเพิ่มเติมเมื่อคลิก
+        const infoContainer = document.createElement("div");
+        container.appendChild(infoContainer);
+    
+        // เพิ่มฟังก์ชันคลิกสำหรับ Personal Info
+        personalLink.onclick = function (e) {
+            e.preventDefault(); // ป้องกันการโหลดหน้าใหม่
+    
+            if (infoContainer.innerHTML === "") {
+                // ถ้าไม่มีข้อความ ให้แสดงข้อความ
+                infoContainer.innerHTML = `
+                    <ul>
+                        <li>Punnawit Sukhumvada, ID: 66010483</li>
+                        <li>Subject: Web Application Development</li>
+                        <li>Semester: 2</li>
+                    </ul>
+                `;
+            } else {
+                // ถ้ามีข้อความแล้ว ให้ลบข้อความออก
+                infoContainer.innerHTML = "";
+            }
+        };
+    
+        // สร้างส่วน Snapshots
+        const snapshotsHeading = document.createElement("h2");
+        snapshotsHeading.textContent = "Snapshots";
+        container.appendChild(snapshotsHeading);
+    
+        const snapshots = ["Fireworks", "Crest", "Action", "Buffalo"];
+        const list = document.createElement("ul");
+        snapshots.forEach(snapshot => {
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+            link.textContent = snapshot;
+            link.href = "#";
+            listItem.appendChild(link);
+            list.appendChild(listItem);
+    
+            // เพิ่มการทำงานเมื่อคลิกที่แต่ละรายการ Snapshot
+            link.onclick = function (e) {
+                e.preventDefault(); // ป้องกันการโหลดหน้าใหม่
+                const newImage = document.createElement("img");
+    
+                // เปลี่ยนรูปภาพตามชื่อที่เลือก
+                if (snapshot === "Fireworks") {
+                    newImage.src = "https://i.postimg.cc/59KvhDQS/fireworks.jpg";
+                } else if (snapshot === "Crest") {
+                    newImage.src = "https://i.postimg.cc/hPJxcM9W/crest.jpg";
+                } else if (snapshot === "Action") {
+                    newImage.src = "https://i.postimg.cc/3JPGRpBy/action.jpg";
+                } else if (snapshot === "Buffalo") {
+                    newImage.src = "https://i.postimg.cc/y8cZSdQL/buffalo.jpg";
+                }
+    
+                newImage.alt = snapshot;
+                newImage.style.width = "500px"; // ขนาด 500px
+                footerImage.replaceWith(newImage); // เปลี่ยนภาพ
+                footerImage = newImage; // อัปเดตตัวแปร footerImage
+            };
+    
+            // เพิ่มเอฟเฟ็กต์เมื่อชี้ที่ลิงก์ใน Snapshots
+            link.onmouseover = function () {
+                link.style.backgroundColor = "yellow"; // เปลี่ยนพื้นหลังเป็นสีเหลือง
+            };
+            link.onmouseout = function () {
+                link.style.backgroundColor = ""; // คืนค่าพื้นหลังเมื่อไม่ชี้
+            };
+        });
+        container.appendChild(list);
+    
+        // เพิ่มภาพแถบด้านล่าง
+        let footerImage = document.createElement("img");
+        footerImage.src = "https://i.postimg.cc/0NvJGshP/kmitl.png"; // ลิงก์โลโก้ที่คล้ายของในรูป
+        footerImage.alt = "KMITL Logo";
+        footerImage.style.width = "500px";
+        container.appendChild(footerImage);
+    
+        // เพิ่มเอฟเฟ็กต์เมื่อชี้ที่ลิงก์ใน Personal Info
+        personalLink.onmouseover = function () {
+            personalLink.style.backgroundColor = "yellow"; // เปลี่ยนพื้นหลังเป็นสีเหลือง
+        };
+        personalLink.onmouseout = function () {
+            personalLink.style.backgroundColor = ""; // คืนค่าพื้นหลังเมื่อไม่ชี้
+        };
+    </script>
     </body>
+
 </html>
