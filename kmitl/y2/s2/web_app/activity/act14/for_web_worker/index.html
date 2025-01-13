@@ -1,144 +1,141 @@
 <!DOCTYPE html>
 <html>
+    <head></head>
+    <body>
+        <div id="maincontainer"></div>
+        <script>
+            const container = document.getElementById("maincontainer");
 
-<head></head>
+            const heading = document.createElement("h1");
+            heading.textContent = "Exercise 04: JavaScript&DOM";
+            container.appendChild(heading);
 
-<body>
-    <div id="maincontainer"></div>
-    <script>
-        const container = document.getElementById("maincontainer");
+            const button = document.createElement("button");
+            button.textContent = "Click me to display Date and Time";
+            container.appendChild(button);
 
-        const heading = document.createElement("h1");
-        heading.textContent = "Exercise 04: JavaScript&DOM";
-        container.appendChild(heading);
+            let dateTimeDisplay;
+            let worker;
 
-        const button = document.createElement("button");
-        button.textContent = "Click me to display Date and Time";
-        container.appendChild(button);
+            button.onclick = function () {
+                button.style.visibility = "hidden";
 
-        let dateTimeDisplay;
-        let worker;
+                dateTimeDisplay = document.createElement("div");
+                dateTimeDisplay.id = "datetime-display";
+                dateTimeDisplay.style.position = "fixed";
+                dateTimeDisplay.style.top = "0px";
+                dateTimeDisplay.style.right = "0px";
+                dateTimeDisplay.style.padding = "5px"
+                dateTimeDisplay.style.fontSize = "14px";
+                dateTimeDisplay.style.border = "3px solid black";
+                container.appendChild(dateTimeDisplay);
 
-        button.onclick = function () {
-            button.style.visibility = "hidden";
+                worker = new Worker('worker.js');
 
-            dateTimeDisplay = document.createElement("div");
-            dateTimeDisplay.id = "datetime-display";
-            dateTimeDisplay.style.position = "fixed";
-            dateTimeDisplay.style.top = "0px";
-            dateTimeDisplay.style.right = "0px";
-            dateTimeDisplay.style.padding = "5px"
-            dateTimeDisplay.style.fontSize = "14px";
-            dateTimeDisplay.style.border = "3px solid black";
-            container.appendChild(dateTimeDisplay);
+                worker.onmessage = function (e) {
+                    const { dateTime, color } = e.data;
+                    dateTimeDisplay.textContent = dateTime;
+                    dateTimeDisplay.style.color = color.textColor;
+                    dateTimeDisplay.style.backgroundColor = color.bgColor;
+                };
 
-            worker = new Worker('worker.js');
+                worker.postMessage('start');
 
-            worker.onmessage = function (e) {
-                const { dateTime, color } = e.data;
-                dateTimeDisplay.textContent = dateTime;
-                dateTimeDisplay.style.color = color.textColor;
-                dateTimeDisplay.style.backgroundColor = color.bgColor;
+                dateTimeDisplay.onclick = function () {
+                    worker.terminate();
+                    dateTimeDisplay.style.position = "absolute";
+                    dateTimeDisplay.style.top = button.offsetTop + "px";
+                    dateTimeDisplay.style.left = button.offsetLeft + "px";
+                    dateTimeDisplay.style.right = null;
+                };
             };
 
-            worker.postMessage('start');
+            const personalInfo = document.createElement("p");
+            const personalLink = document.createElement("a");
+            personalLink.textContent = "Personal Info";
+            personalLink.href = "#";
+            personalInfo.appendChild(personalLink);
+            container.appendChild(personalInfo);
 
-            dateTimeDisplay.onclick = function () {
-                worker.terminate();
-                dateTimeDisplay.style.position = "absolute";
-                dateTimeDisplay.style.top = button.offsetTop + "px";
-                dateTimeDisplay.style.left = button.offsetLeft + "px";
-                dateTimeDisplay.style.right = null;
-            };
-        };
+            personalInfo.style.paddingTop = "30px"
+            personalInfo.style.paddingBottom = "10px"
 
-        const personalInfo = document.createElement("p");
-        const personalLink = document.createElement("a");
-        personalLink.textContent = "Personal Info";
-        personalLink.href = "#";
-        personalInfo.appendChild(personalLink);
-        container.appendChild(personalInfo);
+            personalLink.style.color = "pink"
 
-        personalInfo.style.paddingTop = "30px"
-        personalInfo.style.paddingBottom = "10px"
+            const infoContainer = document.createElement("div");
+            container.appendChild(infoContainer);
 
-        personalLink.style.color = "pink"
-
-        const infoContainer = document.createElement("div");
-        container.appendChild(infoContainer);
-
-        personalLink.onclick = function (e) {
-            e.preventDefault();
-
-            if (infoContainer.innerHTML === "") {
-                infoContainer.innerHTML = `
-                    <ul>
-                        <li>Punnawit Sukhumvada, ID: 66010483</li>
-                        <li>Subject: Web Application Development</li>
-                        <li>Semester: 2</li>
-                    </ul>
-                `;
-            } else {
-                infoContainer.innerHTML = "";
-            }
-        };
-
-        const snapshotsHeading = document.createElement("h2");
-        snapshotsHeading.textContent = "Snapshots";
-        container.appendChild(snapshotsHeading);
-
-        const snapshots = ["Fireworks", "Crest", "Action", "Buffalo"];
-        const list = document.createElement("ul");
-        snapshots.forEach(snapshot => {
-            const listItem = document.createElement("li");
-            const link = document.createElement("a");
-            link.textContent = snapshot;
-            link.href = "#";
-            listItem.appendChild(link);
-            list.appendChild(listItem);
-
-            link.onclick = function (e) {
+            personalLink.onclick = function (e) {
                 e.preventDefault();
-                const newImage = document.createElement("img");
 
-                if (snapshot === "Fireworks") {
-                    newImage.src = "https://i.postimg.cc/59KvhDQS/fireworks.jpg";
-                } else if (snapshot === "Crest") {
-                    newImage.src = "https://i.postimg.cc/hPJxcM9W/crest.jpg";
-                } else if (snapshot === "Action") {
-                    newImage.src = "https://i.postimg.cc/3JPGRpBy/action.jpg";
-                } else if (snapshot === "Buffalo") {
-                    newImage.src = "https://i.postimg.cc/y8cZSdQL/buffalo.jpg";
+                if (infoContainer.innerHTML === "") {
+                    infoContainer.innerHTML = `
+                        <ul>
+                            <li>Punnawit Sukhumvada, ID: 66010483</li>
+                            <li>Subject: Web Application Development</li>
+                            <li>Semester: 2</li>
+                        </ul>
+                    `;
+                } else {
+                    infoContainer.innerHTML = "";
                 }
-
-                newImage.alt = snapshot;
-                newImage.style.width = "500px";
-                footerImage.replaceWith(newImage);
-                footerImage = newImage;
             };
 
-            link.onmouseover = function () {
-                link.style.backgroundColor = "yellow";
+            const snapshotsHeading = document.createElement("h2");
+            snapshotsHeading.textContent = "Snapshots";
+            container.appendChild(snapshotsHeading);
+
+            const snapshots = ["Fireworks", "Crest", "Action", "Buffalo"];
+            const list = document.createElement("ul");
+            snapshots.forEach(snapshot => {
+                const listItem = document.createElement("li");
+                const link = document.createElement("a");
+                link.textContent = snapshot;
+                link.href = "#";
+                listItem.appendChild(link);
+                list.appendChild(listItem);
+
+                link.onclick = function (e) {
+                    e.preventDefault();
+                    const newImage = document.createElement("img");
+
+                    if (snapshot === "Fireworks") {
+                        newImage.src = "https://i.postimg.cc/59KvhDQS/fireworks.jpg";
+                    } else if (snapshot === "Crest") {
+                        newImage.src = "https://i.postimg.cc/hPJxcM9W/crest.jpg";
+                    } else if (snapshot === "Action") {
+                        newImage.src = "https://i.postimg.cc/3JPGRpBy/action.jpg";
+                    } else if (snapshot === "Buffalo") {
+                        newImage.src = "https://i.postimg.cc/y8cZSdQL/buffalo.jpg";
+                    }
+
+                    newImage.alt = snapshot;
+                    newImage.style.width = "500px";
+                    footerImage.replaceWith(newImage);
+                    footerImage = newImage;
+                };
+
+                link.onmouseover = function () {
+                    link.style.backgroundColor = "yellow";
+                };
+                link.onmouseout = function () {
+                    link.style.backgroundColor = "";
+                };
+            });
+            container.appendChild(list);
+
+            let footerImage = document.createElement("img");
+            footerImage.src = "https://i.postimg.cc/0NvJGshP/kmitl.png";
+            footerImage.alt = "KMITL Logo";
+            footerImage.style.width = "500px";
+            container.appendChild(footerImage);
+
+            personalLink.onmouseover = function () {
+                personalLink.style.backgroundColor = "yellow";
             };
-            link.onmouseout = function () {
-                link.style.backgroundColor = "";
+            personalLink.onmouseout = function () {
+                personalLink.style.backgroundColor = "";
             };
-        });
-        container.appendChild(list);
-
-        let footerImage = document.createElement("img");
-        footerImage.src = "https://i.postimg.cc/0NvJGshP/kmitl.png";
-        footerImage.alt = "KMITL Logo";
-        footerImage.style.width = "500px";
-        container.appendChild(footerImage);
-
-        personalLink.onmouseover = function () {
-            personalLink.style.backgroundColor = "yellow";
-        };
-        personalLink.onmouseout = function () {
-            personalLink.style.backgroundColor = "";
-        };
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>
