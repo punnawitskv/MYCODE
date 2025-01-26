@@ -122,7 +122,7 @@ class APIs {
           .snapshots();
     } else {
       // ถ้า userIds ว่าง, คืนค่ากลับเป็น stream ว่างๆ เพื่อไม่ให้เกิดข้อผิดพลาด
-      return Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
+      return const Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
     }
   }
 
