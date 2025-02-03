@@ -5,7 +5,7 @@ function FoodCard({ category, name, description, image, votes, onVote, onUnvote 
    const getVoteDisplay = (count) => (count === 0 ? "MIN" : count >= 10 ? "MAX" : count);
 
    return (
-      <div className="bg-orange-50 border-2 border-black rounded-2xl shadow-lg p-4 flex flex-col w-full max-w-2xl">
+      <div className="bg-orange-100 border-2 border-black rounded-2xl shadow-lg p-4 flex flex-col w-full max-w-2xl">
          <div className="flex w-full">
             <div className="flex-grow">
                <h2 className="text-2xl font-bold py-4">{category}</h2>
@@ -19,7 +19,7 @@ function FoodCard({ category, name, description, image, votes, onVote, onUnvote 
             <button onClick={onVote} className="bg-white border border-black text-black px-3 py-1 hover:bg-slate-100">
                Click to Vote
             </button>
-            <span className="flex items-center justify-center w-24 h-12 bg-lime-500 border-2 border-black text-violet-700 text-2xl font-bold rounded-lg">
+            <span className="flex items-center justify-center w-20 h-14 bg-lime-500 border-2 border-black text-violet-700 text-2xl font-bold rounded-lg">
                {getVoteDisplay(votes)}
             </span>
             <button onClick={onUnvote} className="bg-white border border-black text-black px-3 py-1 hover:bg-slate-100">
@@ -49,9 +49,9 @@ function FoodVotingApp() {
    };
 
    return (
-      <div className="bg-neutral-500 min-h-screen flex flex-col items-center p-4">
+      <div className="bg-neutral-600 min-h-screen flex flex-col items-center p-4">
          <h1 className="text-4xl font-bold text-yellow-500 mb-6">โหวตอาหาร</h1>
-         <div className="space-y-6">
+         <div>
             <FoodCard
                category="อาหารคาว"
                name="ข้าวผัด"
